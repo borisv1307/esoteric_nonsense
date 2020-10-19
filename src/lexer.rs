@@ -1,5 +1,5 @@
-use token;
-use peekable_string_iterator as peek;
+use super::token;
+use super::peekable_string_iterator as peek;
 
 /// The Lexer struct represents a lexer that tokenizes
 /// the string input.

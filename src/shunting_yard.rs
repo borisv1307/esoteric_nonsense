@@ -7,9 +7,9 @@
 
 //TODO: migrate two separate stacks out for differentiation/integration
 use std;
-use lexer;
-use rpn_calculator as calc;
-use token;
+use super::lexer;
+use super::rpn_calculator as calc;
+use super::token;
 
 /// The ShuntingYard struct transforms an expression
 /// to a 32-bit floating point value
@@ -33,7 +33,7 @@ impl<'a> ShuntingYard<'a> {
     /// calculate returns a 32-bit floating value after
     /// parsing the Reverse Polish Notation represented
     /// by the output_queue.
-    pub fn calculate(&mut self, raw_input: &'a str) -> Result<f32, Vec<String>> {
+    pub fn calculate(&mut self, raw_input: &'a str) -> Result<f64, Vec<String>> {
         // Clear out everything
         self.output_queue.clear();
         self.stack.clear();
