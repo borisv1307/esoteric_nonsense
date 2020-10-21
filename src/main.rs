@@ -1,8 +1,18 @@
+mod shunting_yard;
+mod lexer;
+mod rpn_calculator;
+mod token;
+mod peekable_string_iterator;
+
 fn main() {
-    let a = 1;
-    assert_eq!(a, 1);
+
+    let mut s: shunting_yard::ShuntingYard = shunting_yard::ShuntingYard::new();
+    let r: Result<f64, Vec<String>> = s.calculate("2 + 2");
+    println!("{:?}", r);
+    assert_eq!(r.unwrap(), 4.0);
 
 }
+
 
 
 #[repr(C)]
@@ -58,3 +68,4 @@ pub fn x_vector_maker (x_lower: f32, x_upper: f32, x_precision: f32) -> Vec<f32>
     x_vector.shrink_to_fit();
     x_vector
 }
+

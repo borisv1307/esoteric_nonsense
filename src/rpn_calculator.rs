@@ -1,4 +1,4 @@
-use token;
+use super::token;
 
 // Calculate accepts input tokens that are
 // ordered according to Reverse Polish Notation
