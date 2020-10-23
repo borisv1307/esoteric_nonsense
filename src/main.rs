@@ -1,14 +1,33 @@
+use std::ffi::{CString, CStr};
+use std::os::raw::{c_char};
+
 mod s_y;
 
+
+
 fn main() {
-
+ 
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
-    let r: Result<f64, Vec<String>> = s.calculate("2 + 2");
+    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);
+    let r: Result<f32, Vec<String>> = s.calculate("2 + 4");
     println!("{:?}", r);
-    assert_eq!(r.unwrap(), 4.0);
-
+    let t = make_all_x_strings("x^3".to_string(), -10.0, 10.0, 1.0);
+    println!("{:?}", t);
+    
 }
 
+pub fn infix_calculator(expression: String) -> f32 {
+    let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
+    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);
+    let r: Result<f32, Vec<String>> = s.calculate(&expression);
+    r.unwrap() 
+} 
+
+pub fn make_all_x_strings (expression: String, x_lower: f32, x_upper: f32, x_precision: f32) -> Vec<String> {
+    let x_fl_vector = x_vector_maker(x_lower, x_upper, x_precision);
+    let x_string_vector: Vec<String> = x_fl_vector.into_iter().map(|x| expression.replace("x", &x.to_string())).collect();
+    x_string_vector
+}
 
 
 #[repr(C)]
@@ -24,18 +43,22 @@ impl CoordPair<f32> {
     }
 }
 
-
-
 #[no_mangle]
-pub fn x_squared (x_vector: Vec<f32>, lower: f32, upper: f32) -> Vec<f32> {
-    let y_vector: Vec<f32> = x_vector.into_iter().map(|x| x * x).collect();
-    y_vector.into_iter().map(|y| if y >= lower && y <= upper  { y } else { std::f32::NAN } ).collect()
+pub fn func_of_x (expression: String, x_lower: f32, x_upper: f32, x_precision: f32, y_lower: f32, y_upper: f32) -> Vec<f32> {
+    let ys: Vec<f32> = make_all_x_strings(expression, x_lower, x_upper, x_precision).into_iter().map(|expr| infix_calculator(expr) as f32).collect();
+    ys.into_iter().map(|y| if y >= y_lower && y <= y_upper  { y } else { std::f32::NAN } ).collect()
 }
 
+
+// changed xsquared to func_of_x, add expression to arguments (//TODO: strings over ffi??)
 #[no_mangle]
-pub unsafe extern "C" fn coord_vector_maker (x_lower: f32, x_upper: f32, y_lower: f32, y_upper: f32, x_precision: f32, y_precision: f32) ->  *mut CoordPair<f32> {
+pub unsafe extern "C" fn coord_vector_maker (input: *const c_char, x_lower: f32, x_upper: f32, y_lower: f32, y_upper: f32, x_precision: f32, y_precision: f32) ->  *mut CoordPair<f32> {
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
+    let str_slice: &str = input_c_str.to_str().unwrap();
+    let expression: String = str_slice.to_owned(); 
+    
     let x_all : Vec<f32> = x_vector_maker(x_lower, x_upper, x_precision);
-    let y_all : Vec<f32> = round_y_to_precision(x_squared(x_vector_maker(x_lower, x_upper, x_precision), y_lower, y_upper), y_precision);
+    let y_all : Vec<f32> = round_y_to_precision(func_of_x(expression, x_lower, x_upper, x_precision, y_lower, y_upper), y_precision);
     let x_ptr = x_all.as_ptr();
     let y_ptr = y_all.as_ptr();
     let c_out = CoordPair::new(x_ptr, y_ptr);
@@ -57,11 +80,10 @@ pub fn x_vector_maker (x_lower: f32, x_upper: f32, x_precision: f32) -> Vec<f32>
     let x_bound_bredth: f32 = &x_upper.ceil() - &x_lower.floor(); //should be checked that lower is less than upper in frontend?
     let capacity: usize = (x_bound_bredth * (1.0 / &x_precision) ).ceil() as usize;
     let mut x_vector: Vec<f32> = Vec::with_capacity(capacity);
-    while x <= x_upper { //TODO: dont call loops multiple times: slow = bad
+    while x <= x_upper { 
         x_vector.push(x);
         x = x + x_precision;
     }
     x_vector.shrink_to_fit();
     x_vector
 }
-
