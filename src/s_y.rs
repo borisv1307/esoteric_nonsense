@@ -5,6 +5,7 @@ use std;
 #[derive(Debug, Clone, PartialEq)]
 pub enum Token {
     Operator(char, u32, u32),   // Operator, associativity, precedence
+    Variable(char),
     WholeNumber(i32),
     DecimalNumber(f32),
     FunctionCall(String),
@@ -114,7 +115,8 @@ impl<'a> Lexer<'a> {
             Some(c) if c == '(' => self.ast.push(Token::LeftParenthesis),
             Some(c) if c == ')' => self.ast.push(Token::RightParenthesis),
             Some(c) if c == ',' => self.ast.push(Token::Comma),
-            Some(c) if c.is_alphabetic() => {
+            Some(c) if c == 'x' => self.ast.push(Token::Variable(c)),
+            Some(c) if c.is_alphabetic() && c != 'x' => {
                 let ident = self.consume_identifier();
                 self.ast.push(Token::FunctionCall(ident));
                 skip_advance = true;
