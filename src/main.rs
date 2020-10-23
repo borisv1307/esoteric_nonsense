@@ -1,14 +1,29 @@
 mod s_y;
 
+
+
 fn main() {
-
+ 
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
-    let r: Result<f64, Vec<String>> = s.calculate("2 + 2");
+    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);
+    let r: Result<f32, Vec<String>> = s.calculate("2 + 4");
     println!("{:?}", r);
-    assert_eq!(r.unwrap(), 4.0);
-
+    
+    
 }
 
+pub fn infix_calculator(expression: String) -> f32 {
+    let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
+    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);
+    let r: Result<f32, Vec<String>> = s.calculate(&expression);
+    r.unwrap() 
+} 
+
+pub fn make_all_x_strings (expression: String, x_lower: f32, x_upper: f32, x_precision: f32) -> Vec<String> {
+    let x_fl_vector = x_vector_maker(x_lower, x_upper, x_precision);
+    let x_string_vector: Vec<String> = x_fl_vector.into_iter().map(|x| expression.replace("x", &x.to_string())).collect();
+    x_string_vector
+}
 
 
 #[repr(C)]
@@ -24,7 +39,11 @@ impl CoordPair<f32> {
     }
 }
 
-
+#[no_mangle]
+pub fn func_of_x (expression: String, x_lower: f32, x_upper: f32, x_precision: f32, y_lower: f32, y_upper: f32) -> Vec<f32> {
+    let ys: Vec<f32> = make_all_x_strings(expression, x_lower, x_upper, x_precision).into_iter().map(|expr| infix_calculator(expr) as f32).collect();
+    ys.into_iter().map(|y| if y >= y_lower && y <= y_upper  { y } else { std::f32::NAN } ).collect()
+}
 
 #[no_mangle]
 pub fn x_squared (x_vector: Vec<f32>, lower: f32, upper: f32) -> Vec<f32> {
@@ -32,6 +51,7 @@ pub fn x_squared (x_vector: Vec<f32>, lower: f32, upper: f32) -> Vec<f32> {
     y_vector.into_iter().map(|y| if y >= lower && y <= upper  { y } else { std::f32::NAN } ).collect()
 }
 
+//TODO: change xsquared to func_of_x, add expression to arguments (strings over ffi)
 #[no_mangle]
 pub unsafe extern "C" fn coord_vector_maker (x_lower: f32, x_upper: f32, y_lower: f32, y_upper: f32, x_precision: f32, y_precision: f32) ->  *mut CoordPair<f32> {
     let x_all : Vec<f32> = x_vector_maker(x_lower, x_upper, x_precision);
@@ -64,4 +84,3 @@ pub fn x_vector_maker (x_lower: f32, x_upper: f32, x_precision: f32) -> Vec<f32>
     x_vector.shrink_to_fit();
     x_vector
 }
-
