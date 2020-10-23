@@ -520,7 +520,7 @@ impl<'a> std::string::ToString for ShuntingYard<'a> {
             }
         }
 
-        result //TODO: change me to two vectors
+        result 
     }
 
 }
