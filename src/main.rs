@@ -1,12 +1,8 @@
-mod shunting_yard;
-mod lexer;
-mod rpn_calculator;
-mod token;
-mod peekable_string_iterator;
+mod s_y;
 
 fn main() {
 
-    let mut s: shunting_yard::ShuntingYard = shunting_yard::ShuntingYard::new();
+    let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
     let r: Result<f64, Vec<String>> = s.calculate("2 + 2");
     println!("{:?}", r);
     assert_eq!(r.unwrap(), 4.0);
