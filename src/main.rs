@@ -2,6 +2,9 @@ use std::ffi::{CString, CStr};
 use std::os::raw::{c_char};
 
 mod s_y;
+mod function_maps;  // temporary for tests
+
+#[cfg(test)] mod tests;
 
 
 fn main() {
