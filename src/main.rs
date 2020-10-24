@@ -46,7 +46,7 @@ impl CoordPair<f32> {
 #[no_mangle]
 pub fn func_of_x (expression: String, x_lower: f32, x_upper: f32, x_precision: f32, y_lower: f32, y_upper: f32) -> Vec<f32> {
     let ys: Vec<f32> = make_all_x_strings(expression, x_lower, x_upper, x_precision).into_iter().map(|expr| infix_calculator(expr) as f32).collect();
-    ys.into_iter().map(|y| if y >= y_lower && y <= y_upper  { y } else { std::f32::NAN } ).collect()
+    ys //.into_iter().map(|y| if y >= y_lower && y <= y_upper  { y } else { std::f32::NAN } ).collect()
 }
 
 
