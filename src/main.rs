@@ -3,6 +3,8 @@ use std::os::raw::{c_char};
 
 mod s_y;
 
+#[cfg(test)] mod tests;
+
 
 fn main() {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
@@ -21,7 +23,7 @@ pub extern "C" fn calculate(input: *const c_char) -> *mut c_char {
 // changed xsquared to func_of_x, add expression to arguments (//TODO: strings over ffi??)
 #[no_mangle]
 pub unsafe extern "C" fn coord_vector_maker (input: *const c_char, x_lower: f32, x_upper: f32, y_lower: f32, y_upper: f32, x_precision: f32, y_precision: f32) ->  *mut CoordPair<f32> {
-    let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
+    let input_c_str: &CStr = CStr::from_ptr(input);
     let str_slice: &str = input_c_str.to_str().unwrap();
     let expression: String = str_slice.to_owned(); 
     
