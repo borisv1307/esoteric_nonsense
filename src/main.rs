@@ -12,6 +12,14 @@ fn main() {
 }
 
 #[no_mangle]
+pub extern "C" fn calculate_for_graph(input: *const c_char) -> f32 {
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
+    let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let result: f32 = infix_calculator(expression.to_string());
+    result
+}
+
+#[no_mangle]
 pub extern "C" fn calculate(input: *const c_char) -> *mut c_char {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
