@@ -12,9 +12,10 @@ fn main() {
 }
 
 #[no_mangle]
-pub extern "C" fn calculate_for_graph(input: *const c_char) -> f64 {
+pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let expression = expression.replace("x", &some_x.to_string());
     let result: f64 = infix_calculator(expression.to_string());
     result
 }
