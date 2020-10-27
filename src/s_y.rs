@@ -6,8 +6,8 @@ use std;
 pub enum Token {
     Operator(char, u32, u32),   // Operator, associativity, precedence
     Variable(char),
-    WholeNumber(i32),
-    DecimalNumber(f32),
+    WholeNumber(i64),
+    DecimalNumber(f64),
     FunctionCall(String),
     Comma,
     LeftParenthesis,
@@ -191,7 +191,7 @@ impl<'a> Lexer<'a> {
 
 
 
-pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
+pub fn calculate(input: &Vec<Token>) -> Result<f64, Vec<String>> {
     let mut input = input.clone();
     let mut stack = Vec::new();
     let mut len = input.len();
@@ -211,14 +211,14 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
                     _ => break
                 }
             },
-            Token::WholeNumber(n) => stack.push(Token::DecimalNumber(n as f32)),
+            Token::WholeNumber(n) => stack.push(Token::DecimalNumber(n as f64)),
             Token::FunctionCall(function_name) => {
                 match &function_name as &str {
                     "log" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).log10())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).log10())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).log10())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).log10())),
                             _ => ()
                         }
                     },
@@ -226,8 +226,8 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
                     "ln" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).ln())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).ln())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).ln())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).ln())),
                             _ => ()
                         }
                     },
@@ -235,16 +235,16 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
                     "sqrt" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).sqrt())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).sqrt())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).sqrt())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).sqrt())),
                             _ => ()
                         }
                     },
                     "abs" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).abs())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).abs())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).abs())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).abs())),
                             _ => ()
                         }
                     },
@@ -273,16 +273,16 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
                         let arg = stack.pop();
                         match arg {
                             Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber(
-                                if (n as f32).sin() == 0.0 {
-                                    f32::NAN 
+                                if (n as f64).sin() == 0.0 {
+                                    f64::NAN 
                                 } else {
-                                    1.0 / (n as f32).sin()
+                                    1.0 / (n as f64).sin()
                                 })),
                             Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber(
-                                if (n as f32).sin() == 0.0 {
-                                    f32::NAN 
+                                if (n as f64).sin() == 0.0 {
+                                    f64::NAN 
                                 } else {
-                                    1.0 / (n as f32).sin()
+                                    1.0 / (n as f64).sin()
                                 })),
                             _ => ()
                         }
@@ -291,16 +291,16 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
                         let arg = stack.pop();
                         match arg {
                             Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber(
-                                if (n as f32).cos() == 0.0 {
-                                    f32::NAN 
+                                if (n as f64).cos() == 0.0 {
+                                    f64::NAN 
                                 } else { 
-                                    1.0 / (n as f32).cos() 
+                                    1.0 / (n as f64).cos() 
                                 })),
                             Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber(
-                                if (n as f32).cos() == 0.0 {
-                                    f32::NAN 
+                                if (n as f64).cos() == 0.0 {
+                                    f64::NAN 
                                 } else { 
-                                    1.0 / (n as f32).cos() 
+                                    1.0 / (n as f64).cos() 
                                 })),
                             _ => ()
                         }
@@ -309,16 +309,16 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
                         let arg = stack.pop();
                         match arg {
                             Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber(
-                                if (n as f32).tan() == 0.0 { 
-                                    f32::NAN 
+                                if (n as f64).tan() == 0.0 { 
+                                    f64::NAN 
                                 } else { 
-                                    1.0 / (n as f32).tan()
+                                    1.0 / (n as f64).tan()
                                 })),
                             Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber(
-                                if (n as f32).tan() == 0.0 { 
-                                    f32::NAN 
+                                if (n as f64).tan() == 0.0 { 
+                                    f64::NAN 
                                 } else { 
-                                    1.0 / (n as f32).tan()
+                                    1.0 / (n as f64).tan()
                                 })),
                             _ => ()
                         }
@@ -326,72 +326,72 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
                     "sinh" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).sinh())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).sinh())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).sinh())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).sinh())),
                             _ => ()
                         }
                     },
                     "cosh" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).cosh())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).cosh())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).cosh())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).cosh())),
                             _ => ()
                         }
                     },
                     "tanh" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).tanh())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).tanh())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).tanh())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).tanh())),
                             _ => ()
                         }
                     },
                     "asin" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).asin())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).asin())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).asin())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).asin())),
                             _ => ()
                         }
                     },
                     "acos" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).acos())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).acos())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).acos())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).acos())),
                             _ => ()
                         }
                     },
                     "atan" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).atan())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).atan())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).atan())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).atan())),
                             _ => ()
                         }
                     },
                     "asinh" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).asinh())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).asinh())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).asinh())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).asinh())),
                             _ => ()
                         }
                     },
                     "acosh" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).acosh())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).acosh())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).acosh())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).acosh())),
                             _ => ()
                         }
                     },
                     "atanh" => {
                         let arg = stack.pop();
                         match arg {
-                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f32).atanh())),
-                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f32).atanh())),
+                            Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber((n as f64).atanh())),
+                            Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber((n as f64).atanh())),
                             _ => ()
                         }
                     },
@@ -467,14 +467,14 @@ pub fn calculate(input: &Vec<Token>) -> Result<f32, Vec<String>> {
     }
 }
 
-fn operate(operator: char, left: f32, right: f32) -> f32 {
+fn operate(operator: char, left: f64, right: f64) -> f64 {
     match operator {
         '+' => left + right,
         '-' => left - right,
         '*' => left * right,
         '/' => left / right,
         '^' => left.powf(right),
-        _ => 0f32
+        _ => 0f64
     }
 }
 
@@ -504,7 +504,7 @@ impl<'a> ShuntingYard<'a> {
     /// calculate returns a 32-bit floating value after
     /// parsing the Reverse Polish Notation represented
     /// by the output_queue.
-    pub fn calculate(&mut self, raw_input: &'a str) -> Result<f32, Vec<String>> {
+    pub fn calculate(&mut self, raw_input: &'a str) -> Result<f64, Vec<String>> {
         // Clear out everything
         self.output_queue.clear();
         self.stack.clear();
