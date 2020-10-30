@@ -28,6 +28,15 @@ pub extern "C" fn calculate(input: *const c_char) -> f64 {
     result
 }
 
+pub extern "C" fn calculate_string(input: *const c_char) -> *mut c_char {
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
+    let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let result: f64 = infix_calculator(expression.to_string());
+    let output = CString::new(result.to_string());
+    output.unwrap().into_raw()
+    //result
+}
+
 // changed xsquared to func_of_x, add expression to arguments (//TODO: strings over ffi??)
 #[no_mangle]
 pub unsafe extern "C" fn coord_vector_maker (input: *const c_char, x_lower: f64, x_upper: f64, y_lower: f64, y_upper: f64, x_precision: f64, y_precision: f64) ->  *mut CoordPair<f64> {
