@@ -13,7 +13,7 @@ fn main() {
 
 #[no_mangle]
 pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
-    let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input)};
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
     let expression = expression.replace("x", &some_x.to_string());
     let result: f64 = infix_calculator(expression.to_string());
@@ -21,13 +21,11 @@ pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f
 }
 
 #[no_mangle]
-pub extern "C" fn calculate(input: *const c_char) -> *mut c_char {
+pub extern "C" fn calculate(input: *const c_char) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
     let result: f64 = infix_calculator(expression.to_string());
-    let output = CString::new(result.to_string());
-    output.unwrap().into_raw()
-    //result
+    result
 }
 
 // changed xsquared to func_of_x, add expression to arguments (//TODO: strings over ffi??)
