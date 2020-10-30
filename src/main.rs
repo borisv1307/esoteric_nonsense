@@ -37,7 +37,7 @@ pub extern "C" fn calculate_string(input: *const c_char) -> *mut c_char {
     //result
 }
 
-// changed xsquared to func_of_x, add expression to arguments (//TODO: strings over ffi??)
+// changed xsquared to func_of_x, add expression to arguments
 #[no_mangle]
 pub unsafe extern "C" fn coord_vector_maker (input: *const c_char, x_lower: f64, x_upper: f64, y_lower: f64, y_upper: f64, x_precision: f64, y_precision: f64) ->  *mut CoordPair<f64> {
     let input_c_str: &CStr = CStr::from_ptr(input);
@@ -53,12 +53,19 @@ pub unsafe extern "C" fn coord_vector_maker (input: *const c_char, x_lower: f64,
     Box::into_raw(Box::new(c_out))
 }
 
+// calculates a f64 result from a string expression, returns NaN if runtime errors occur
 pub fn infix_calculator(expression: String) -> f64 {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
     assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);
     let r: Result<f64, Vec<String>> = s.calculate(&expression);
-    r.unwrap() 
-} 
+    match r {
+        Ok(result) => result,
+        Err(e) => {
+            println!("Errors: {:?}", e);
+            f64::NAN
+        }
+    }
+}
 
 pub fn make_all_x_strings (expression: String, x_lower: f64, x_upper: f64, x_precision: f64) -> Vec<String> {
     let x_fl_vector = x_vector_maker(x_lower, x_upper, x_precision);
