@@ -483,7 +483,7 @@ fn operate(operator: char, left: f64, right: f64) -> f64 {
 
 
 /// The ShuntingYard struct transforms an expression
-/// to a 32-bit floating point value
+/// to a 64-bit floating point value
 pub struct ShuntingYard<'a> {
     lexer: Lexer<'a>,
     output_queue: Vec<Token>,
@@ -501,7 +501,7 @@ impl<'a> ShuntingYard<'a> {
         }
     }
 
-    /// calculate returns a 32-bit floating value after
+    /// calculate returns a 64-bit floating value after
     /// parsing the Reverse Polish Notation represented
     /// by the output_queue.
     pub fn calculate(&mut self, raw_input: &'a str) -> Result<f64, Vec<String>> {
