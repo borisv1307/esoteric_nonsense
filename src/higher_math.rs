@@ -31,7 +31,7 @@ fn poly_gcd (poly_1: String, poly_2: String, var: String) -> String {
         print(gcd(poly_x_1, poly_x_2))
         gcd_sol = str(gcd(poly_x_1, poly_x_2))
     };
-    let solution_string: String = dbg!(p.get::<String>("gcd_sol"));
+    let solution_string: String = (p.get::<String>("gcd_sol"));
     solution_string.replace("x", var_replace)
 }
 
@@ -47,9 +47,9 @@ pub fn multi_gcd( polynomials: Vec<String>, var: String) -> String {
         for p in 'polynomials:
             polys.append(parse_expr(p, local_dict = {'var:x}))
         
-        print(gcd(polys))
+        #print(gcd(polys))
         gcd_sol = str(gcd(polys))
     };
-    let solution_string: String = dbg!(p.get::<String>("gcd_sol"));
+    let solution_string: String = (p.get::<String>("gcd_sol"));
     solution_string.replace("x", var_replace).replace("**", "^")
 }
