@@ -13,7 +13,7 @@ fn solve_rational(equation: String, var: String) -> String{
         sols = solve(Eq(lhs, rhs), x)
         solutions = str(sols)
     };
-    let solution_string: String = dbg!(p.get::<String>("solutions"));
+    let solution_string: String = (p.get::<String>("solutions"));
     println!("{}", solution_string);
     solution_string
 }
