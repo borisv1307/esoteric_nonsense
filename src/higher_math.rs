@@ -1,7 +1,7 @@
 #![feature(proc_macro_hygiene)]
 use inline_python::{Context, python};
 
-fn solve_rational(equation: String, var: String) -> String{
+pub fn solve_rational(equation: String, var: String) -> String{
     let p: Context = python! {
         from sympy.parsing.sympy_parser import parse_expr
         from sympy import Symbol, solve, Eq
