@@ -1,14 +1,79 @@
+#![feature(proc_macro_hygiene)]
+
 use std::ffi::{CString, CStr};
 use std::os::raw::{c_char};
+//for demos
+use std::io;
 
 mod s_y;
+mod higher_math;
 
 #[cfg(test)] mod tests;
 
-
+#[allow(dead_code)]
 fn main() {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
-    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);    
+    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);   
+    //println!("HERE!");
+    //TODO: turn test commands into cstr
+    //assert_eq!(high_math());
+    
+    loop {
+        let command = CString::new(get_input("Input Command"));
+        let expression = CString::new(get_input("Input Expression(s)").replace("^", "**"));
+        let var = CString::new("x");
+        //println!("{:?}", command);
+        unsafe{
+        let output: String = CStr::from_ptr( high_math(
+                command.unwrap().into_raw(), 
+                expression.unwrap().into_raw(), 
+                var.unwrap().into_raw())).to_str().unwrap().to_string().replace("**", "^");
+            println!("result: {}", output);
+        };
+        
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const c_char, var_in: *const c_char) -> *mut c_char {
+    let command: String = CStr::from_ptr(command_in).to_str().unwrap().to_string();
+    let exp_eq: String = CStr::from_ptr(exp_eq_in).to_str().unwrap().to_string().replace("^", "**");
+    let var: String = CStr::from_ptr(var_in).to_str().unwrap().to_string();
+
+    //let command= "Solve";
+    
+    let mut result: String = "Error".to_string();
+    match &command as &str {
+            result = higher_math::solve_rational(exp_eq, var);
+        }
+        "PolyGCD" => {
+            let tostr = &exp_eq as &str;
+            let v: Vec<&str> = tostr
+                .split(|c| c == ',')
+                .collect();
+            let polynomials: Vec<String> = v.into_iter().map(|e| e.to_string()).collect();
+            result  = higher_math::multi_gcd(polynomials , var);
+        }
+        "Test" => {
+            result = higher_math::test_string(command.to_string());
+        }
+        "PolyLCM" => {
+            let tostr = &exp_eq as &str;
+            let v: Vec<&str> = tostr
+                .split(|c| c == ',')
+                .collect();
+            let polynomials: Vec<String> = v.into_iter().map(|e| e.to_string()).collect();
+            result  = higher_math::poly_lcm(polynomials , var);
+        }
+        "Simplify" => {
+            result = higher_math::simplify(exp_eq)
+        }
+        _ => {
+            //TODO: ?add call for shunting yard in abcense of command
+        }
+    }
+    let output = CString::new(result.to_string());
+    output.unwrap().into_raw()
 }
 
 #[no_mangle]
@@ -21,14 +86,14 @@ pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f
 }
 
 #[no_mangle]
-pub extern "C" fn calculate(input: *const c_char) -> f64 {
+pub unsafe extern "C" fn calculate(input: *const c_char) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
     let result: f64 = infix_calculator(expression.to_string());
     result
 }
 
-pub extern "C" fn calculate_string(input: *const c_char) -> *mut c_char {
+pub unsafe extern "C" fn calculate_string(input: *const c_char) -> *mut c_char {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
     let result: f64 = infix_calculator(expression.to_string());
@@ -113,4 +178,15 @@ pub fn x_vector_maker (x_lower: f64, x_upper: f64, x_precision: f64) -> Vec<f64>
     }
     x_vector.shrink_to_fit();
     x_vector
+}
+
+//for demos
+pub fn get_input(prompt: &str) -> String{
+    println!("{}",prompt);
+    let mut input = String::new();
+    match io::stdin().read_line(&mut input) {
+        Ok(_goes_into_input_above) => {},
+        Err(_no_updates_is_fine) => {},
+    }
+    input.trim().to_string()
 }
