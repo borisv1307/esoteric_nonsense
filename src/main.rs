@@ -44,6 +44,7 @@ pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const 
     
     let mut result: String = "Error".to_string();
     match &command as &str {
+        "Solve" => {
             result = higher_math::solve_rational(exp_eq, var);
         }
         "PolyGCD" => {
