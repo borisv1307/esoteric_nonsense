@@ -1,5 +1,5 @@
 [package]
-name = "eq_solver"
+name = "eq_solve"
 version = "0.1.0"
 authors = ["Trevor <71519259+TPXS-Drexel@users.noreply.github.com>"]
 edition = "2018"

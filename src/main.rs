@@ -2,48 +2,45 @@ use std::ffi::{CString, CStr};
 use std::os::raw::{c_char};
 
 mod s_y;
-mod matrices;
-// mod higher_math;
+mod higher_math;
 
 #[cfg(test)] mod tests;
 
- 
+
 fn main() {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
     assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);   
     println!("HERE!") 
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const c_char, var_in: *const c_char) -> *mut c_char {
+    let command: String = CStr::from_ptr(command_in).to_str().unwrap().to_string();
+    let exp_eq: String = CStr::from_ptr(exp_eq_in).to_str().unwrap().to_string().replace("^", "**");
+    let var: String = CStr::from_ptr(var_in).to_str().unwrap().to_string();
 
-
-// #[no_mangle]
-// pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const c_char, var_in: *const c_char) -> *mut c_char {
-//     let command: String = CStr::from_ptr(command_in).to_str().unwrap().to_string();
-//     let exp_eq: String = CStr::from_ptr(exp_eq_in).to_str().unwrap().to_string().replace("^", "**");
-//     let var: String = CStr::from_ptr(var_in).to_str().unwrap().to_string();
-
-//     let command= "Solve";
+    let command= "Solve";
     
-//     let mut result: String = "Error".to_string();
-//     match &command as &str {
-//         "Solve" => {
-//             result = higher_math::solve_rational(exp_eq, var);
-//         }
-//         "PolyGCD" => {
-//             let tostr = &exp_eq as &str;
-//             let v: Vec<&str> = "Mary had a little lamb."
-//                 .split(|c| c == ',')
-//                 .collect();
-//             let polynomials: Vec<String> = v.into_iter().map(|e| e.to_string()).collect();
-//             result  = higher_math::multi_gcd(polynomials , var);
-//         }
-//         _ => {
-//             //TODO: add call for shunting yard in abcense of command
-//         }
-//     }
-//     let output = CString::new(result.to_string());
-//     output.unwrap().into_raw()
-// }
+    let mut result: String = "Error".to_string();
+    match &command as &str {
+        "Solve" => {
+            result = higher_math::solve_rational(exp_eq, var);
+        }
+        "PolyGCD" => {
+            let tostr = &exp_eq as &str;
+            let v: Vec<&str> = "Mary had a little lamb."
+                .split(|c| c == ',')
+                .collect();
+            let polynomials: Vec<String> = v.into_iter().map(|e| e.to_string()).collect();
+            result  = higher_math::multi_gcd(polynomials , var);
+        }
+        _ => {
+            //TODO: add call for shunting yard in abcense of command
+        }
+    }
+    let output = CString::new(result.to_string());
+    output.unwrap().into_raw()
+}
 
 #[no_mangle]
 pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
@@ -60,11 +57,6 @@ pub unsafe extern "C" fn calculate(input: *const c_char) -> f64 {
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
     let result: f64 = infix_calculator(expression.to_string());
     result
-}
-
-#[no_mangle]
-pub extern "C" fn calculate_matr(matr1: *const c_char, matr2: *const c_char, instr: *const c_char) -> *mut c_char {
-    return matrices::calculate_matr(matr1, matr2, instr);
 }
 
 pub unsafe extern "C" fn calculate_string(input: *const c_char) -> *mut c_char {
