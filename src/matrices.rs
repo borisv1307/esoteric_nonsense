@@ -89,10 +89,10 @@ pub extern fn calculate_matr(matr1_c_str: *const c_char, matr2_c_str: *const c_c
     let inst_c_string: &CStr = unsafe { CStr::from_ptr(instructions)};
     let instruct_string: String = inst_c_string.to_str().unwrap().to_string();
 
-    if instruct_string == "add"{
+    if instruct_string == "+"{
         result_vec = add_matr(&matr_vec1,&matr_vec2);
     }
-    else if instruct_string == "sub"{
+    else if instruct_string == "−"{
         result_vec = sub_matr(&matr_vec1,&matr_vec2);
     }
 
