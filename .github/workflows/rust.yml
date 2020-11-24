@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python: [3.9.0-beta.4]
+        python: [3.9]
     steps:
     - uses: actions/checkout@v2
     - name: Install ndk
