@@ -28,5 +28,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
         architecture: 'x64'
+    - name: install nightly
+      run: rustup install nightly
     - name: Build
-      run: cargo ndk --platform 21 --target x86_64-linux-android build --verbose
+      run: cargo ndk +nightly --platform 21 --target x86_64-linux-android build --verbose
