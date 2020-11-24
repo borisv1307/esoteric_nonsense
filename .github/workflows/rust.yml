@@ -18,7 +18,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install ndk
       run: cargo install cargo-ndk
-    - name: Add target
+    - name: Set NDK path
+      run: export ANDROID_NDK_HOME=/home/runner/.cargo/bin/cargo-ndk
+    - name: Add targets
       run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android 
     - name: Build
       run: cargo ndk --platform 21 --target i686-linux-android build --verbose
