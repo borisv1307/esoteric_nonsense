@@ -24,7 +24,9 @@ jobs:
       run: echo "ANDROID_NDK_HOME=/home/runner/.cargo/bin/cargo-ndk" >> $GITHUB_ENV
     - name: Add targets
       run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android 
-    - name: Configure python
-      run: ./configure --build=x86_64-pc-linux-gnu --host=i686-pc-linux-gnu
+    - uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python }}
+        architecture: 'x64'
     - name: Build
       run: cargo ndk --platform 21 --target x86_64-linux-android build --verbose
