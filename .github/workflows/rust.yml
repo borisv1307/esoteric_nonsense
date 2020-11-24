@@ -19,7 +19,7 @@ jobs:
     - name: Install ndk
       run: cargo install cargo-ndk
     - name: Set NDK path
-      run: export ANDROID_NDK_HOME=/home/runner/.cargo/bin/cargo-ndk
+      run: echo "ANDROID_NDK_HOME=/home/runner/.cargo/bin/cargo-ndk" >> $GITHUB_ENV
     - name: Add targets
       run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android 
     - name: Build
