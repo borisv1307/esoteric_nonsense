@@ -29,4 +29,4 @@ jobs:
         python-version: ${{ matrix.python }}
         architecture: 'x86'
     - name: Build
-      run: cargo ndk --platform 21 --target i686-linux-android build --verbose
+      run: cargo ndk --platform 21 --target x86_64-linux-android build --verbose
