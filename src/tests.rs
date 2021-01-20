@@ -270,3 +270,127 @@ fn test_matr_calc_sub() {
     assert_eq!("0,0,0!0,0,0!0,0,0", back_to_string2);
 
 }
+
+//matrix multiplication
+#[test]
+fn test_matr_scalar_mult_as1(){
+
+    let test_matr1: Vec<Vec<f64>> = vec![vec![1.0,2.0,3.0],vec![1.0,2.0,3.0]];
+    let test_matr2: Vec<Vec<f64>> = vec![vec![1.0,2.0],vec![1.0,2.0],vec![1.0,2.0]];
+
+    let test_result: Vec<Vec<f64>> = matrices::scalar_multiplication(&test_matr1,&test_matr2);
+    assert_eq!(test_result, vec![vec![6.0,12.0],vec![6.0,12.0]]);
+
+}
+
+#[test]
+fn test_matr_scalar_mult_as2(){
+
+    let test_matr2: Vec<Vec<f64>> = vec![vec![1.0,2.0,3.0],vec![1.0,2.0,3.0]];
+    let test_matr1: Vec<Vec<f64>> = vec![vec![1.0,2.0],vec![1.0,2.0],vec![1.0,2.0]];
+
+    let test_result: Vec<Vec<f64>> = matrices::scalar_multiplication(&test_matr1,&test_matr2);
+    assert_eq!(test_result, vec![vec![3.0,6.0,9.0],vec![3.0,6.0,9.0],vec![3.0,6.0,9.0]]);
+}
+
+#[test]
+fn test_matr_scalar_mult_square(){
+
+    let test_matr1: Vec<Vec<f64>> = vec![vec![1.0,2.0,3.0],vec![1.0,2.0,3.0],vec![1.0,2.0,3.0]];
+    let test_matr2: Vec<Vec<f64>> = vec![vec![1.0,2.0,3.0],vec![1.0,2.0,3.0],vec![1.0,2.0,3.0]];
+
+    let test_result: Vec<Vec<f64>> = matrices::scalar_multiplication(&test_matr1,&test_matr2);
+    assert_eq!(test_result, vec![vec![6.0,12.0,18.0],vec![6.0,12.0,18.0],vec![6.0,12.0,18.0]]);
+
+}
+
+#[test]
+fn test_matr_calc_mult() {
+
+    let test_alpha = String::from("1,2,3!1,2,3");
+    let test2_alpha = CString::new(test_alpha).unwrap();
+    let mut test3_alpha: Vec<u8> = test2_alpha.into_bytes_with_nul();
+    let ctest_alpha: *mut i8 = test3_alpha.as_mut_ptr() as *mut i8;
+
+    let test_beta = String::from("1,2!1,2!1,2");
+    let test2_beta = CString::new(test_beta).unwrap();
+    let mut test3_beta: Vec<u8> = test2_beta.into_bytes_with_nul();
+    let ctest_beta: *mut i8 = test3_beta.as_mut_ptr() as *mut i8;
+
+    let test_instr = String::from("mult");
+    let test2_instr = CString::new(test_instr).unwrap();
+    let mut test3_instr: Vec<u8> = test2_instr.into_bytes_with_nul();
+    let ctest_instr: *mut i8 = test3_instr.as_mut_ptr() as *mut i8;
+
+    let result_test_raw: *mut c_char = matrices::calculate_matr(ctest_alpha,ctest_beta,ctest_instr);
+
+    let back_to_string1: &CStr = unsafe { CStr::from_ptr(result_test_raw)};
+    let back_to_string2: String = back_to_string1.to_str().unwrap().to_string();
+
+    assert_eq!("6,12!6,12", back_to_string2);
+
+}
+
+#[test]
+fn test_mult_into_matr(){
+
+    let test_matr: Vec<Vec<f64>> = vec![vec![1.0,2.0,3.0],vec![1.0,2.0,3.0],vec![1.0,2.0,3.0]];
+    let test_multiplier: Vec<Vec<f64>> = vec![vec![2.0]];
+
+    let test_result: Vec<Vec<f64>> = matrices::mult_into_matr(&test_multiplier,&test_matr);
+    assert_eq!(test_result, vec![vec![2.0,4.0,6.0],vec![2.0,4.0,6.0],vec![2.0,4.0,6.0]]);
+}
+
+#[test]
+fn test_transpose_matr(){
+
+    let test_matr: Vec<Vec<f64>> = vec![vec![1.0,2.0],vec![1.0,2.0],vec![1.0,2.0]];
+    let test_result: Vec<Vec<f64>> = matrices::matr_transpose(test_matr);
+
+    assert_eq!(test_result, vec![vec![1.0,1.0,1.0],vec![2.0,2.0,2.0]])
+}
+
+#[test]
+fn test_matr_calc_mult_into(){
+
+    let test_alpha = String::from("2");
+    let test2_alpha = CString::new(test_alpha).unwrap();
+    let mut test3_alpha: Vec<u8> = test2_alpha.into_bytes_with_nul();
+    let ctest_alpha: *mut i8 = test3_alpha.as_mut_ptr() as *mut i8;
+
+    let test_beta = String::from("1,2,3!1,2,3!1,2,3");
+    let test2_beta = CString::new(test_beta).unwrap();
+    let mut test3_beta: Vec<u8> = test2_beta.into_bytes_with_nul();
+    let ctest_beta: *mut i8 = test3_beta.as_mut_ptr() as *mut i8;
+
+    let test_instr = String::from("mult_f64_into_matr");
+    let test2_instr = CString::new(test_instr).unwrap();
+    let mut test3_instr: Vec<u8> = test2_instr.into_bytes_with_nul();
+    let ctest_instr: *mut i8 = test3_instr.as_mut_ptr() as *mut i8;
+
+    let result_test_raw: *mut c_char = matrices::calculate_matr(ctest_alpha,ctest_beta,ctest_instr);
+
+    let back_to_string1: &CStr = unsafe { CStr::from_ptr(result_test_raw)};
+    let back_to_string2: String = back_to_string1.to_str().unwrap().to_string();
+
+    assert_eq!("2,4,6!2,4,6!2,4,6", back_to_string2);
+}
+
+#[test]
+fn test_matr_determinant_2x2(){
+
+    let test_matr: Vec<Vec<f64>> = vec![vec![45.0,34.0],vec![23.0,67.0]];
+    let test_result: f64 = 2233.0;
+
+    assert_eq!(test_result, matrices::determinant_wrapper(test_matr, 2));
+}
+
+#[test]
+fn test_matr_determinant_nxn(){
+
+    let test_matr: Vec<Vec<f64>> = vec![vec![24.0,34.0,45.0],vec![65.0,54.0,43.0],vec![12.0,34.0,54.0]];
+    let test_result: f64 = 3390.0;
+
+ 
+    assert_eq!(test_result, matrices::determinant_wrapper(test_matr, 3));
+}
