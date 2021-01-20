@@ -1,3 +1,4 @@
+/*
 #![feature(proc_macro_hygiene)]
 use inline_python::{Context, python};
 
@@ -53,3 +54,4 @@ pub fn multi_gcd( polynomials: Vec<String>, var: String) -> String {
     let solution_string: String = (p.get::<String>("gcd_sol"));
     solution_string.replace("x", var_replace).replace("**", "^")
 }
+*/
