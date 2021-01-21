@@ -18,7 +18,7 @@ jobs:
     - uses: nttld/setup-ndk@v1
       id: setup-ndk
       with:
-        ndk-version: 21
+        ndk-version: r21d
     - name: Add targets
       run: rustup target add i686-linux-android
     - name: Build
