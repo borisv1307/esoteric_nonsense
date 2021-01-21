@@ -22,5 +22,7 @@ jobs:
       run: echo "ANDROID_NDK_HOME=/home/runner/.cargo/bin/cargo-ndk" >> $GITHUB_ENV
     - name: Add targets
       run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android 
+    - name: View toolchains
+      run: rustup toolchain list
     - name: Build
       run: cargo ndk --platform 21 --target i686-linux-android build --verbose
