@@ -13,13 +13,14 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
-    - uses: nttld/setup-ndk@v1
-      id: setup-ndk
-      with:
-        ndk-version: r21d
+    - name: Install ndk
+      run: cargo install cargo-ndk
+    - name: Set NDK path
+      run: echo "ANDROID_NDK_HOME=/home/runner/.cargo/bin/cargo-ndk" >> $GITHUB_ENV
     - name: Add targets
-      run: rustup target add i686-linux-android
+      run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android 
     - name: Build
       run: cargo ndk --platform 21 --target i686-linux-android build --verbose
