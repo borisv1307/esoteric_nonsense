@@ -24,5 +24,7 @@ jobs:
       run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android --toolchain stable
     - name: View toolchains
       run: rustup toolchain list
+    - name: View targets
+      run: rustup target list
     - name: Build
       run: cargo ndk --platform 21 --target i686-linux-android build --verbose
