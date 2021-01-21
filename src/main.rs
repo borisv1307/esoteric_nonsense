@@ -13,6 +13,7 @@ fn main() {
     println!("HERE!") 
 }
 
+/*
 #[no_mangle]
 pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const c_char, var_in: *const c_char) -> *mut c_char {
     let command: String = CStr::from_ptr(command_in).to_str().unwrap().to_string();
@@ -41,11 +42,12 @@ pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const 
     let output = CString::new(result.to_string());
     output.unwrap().into_raw()
 }
+*/
 
 #[no_mangle]
 pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input)};
-    let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let expression = expression.replace("x", &some_x.to_string());
     let result: f64 = infix_calculator(expression.to_string());
     result
@@ -54,14 +56,14 @@ pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f
 #[no_mangle]
 pub unsafe extern "C" fn calculate(input: *const c_char) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
-    let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let result: f64 = infix_calculator(expression.to_string());
     result
 }
 
 pub unsafe extern "C" fn calculate_string(input: *const c_char) -> *mut c_char {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
-    let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let result: f64 = infix_calculator(expression.to_string());
     let output = CString::new(result.to_string());
     output.unwrap().into_raw()
