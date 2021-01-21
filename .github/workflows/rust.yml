@@ -26,5 +26,7 @@ jobs:
       run: rustup toolchain list
     - name: View targets
       run: rustup target list
+    - name: View cargo ndk info
+      run: cargo ndk --help
     - name: Build
       run: cargo ndk --platform 21 --target i686-linux-android build --verbose
