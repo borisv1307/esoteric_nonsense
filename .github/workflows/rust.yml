@@ -12,10 +12,12 @@ env:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
+    - name: Install GCC
+      run: sudo apt install build-essential
     - name: Install ndk
       run: cargo install cargo-ndk
     - name: Set NDK path
