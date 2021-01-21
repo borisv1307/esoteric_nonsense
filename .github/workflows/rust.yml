@@ -13,9 +13,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python: [3.9]
     steps:
     - uses: actions/checkout@v2
     - name: Install ndk
@@ -24,11 +21,5 @@ jobs:
       run: echo "ANDROID_NDK_HOME=/home/runner/.cargo/bin/cargo-ndk" >> $GITHUB_ENV
     - name: Add targets
       run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android 
-    - uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python }}
-        architecture: 'x64'
-    - name: install nightly
-      run: rustup install nightly
     - name: Build
-      run: cargo +nightly ndk --platform 21 --target x86_64-linux-android build --verbose
+      run: cargo ndk --platform 21 --target x86_64-linux-android build --verbose
