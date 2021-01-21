@@ -12,12 +12,12 @@ env:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install ndk
       run: cargo install cargo-ndk
     - name: Add targets
-      run: rustup target add x86_64-linux-android
+      run: rustup target add i686-linux-android
     - name: Build
-      run: cargo ndk --platform 21 --target x86_64-linux-android build --verbose
+      run: cargo ndk --platform 21 --target i686-linux-android build --verbose
