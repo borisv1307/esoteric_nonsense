@@ -4,13 +4,34 @@ use std::os::raw::{c_char};
 mod s_y;
 mod higher_math;
 
+use rand::{thread_rng, Rng};
+
+
 #[cfg(test)] mod tests;
 
+mod conversions;
 
 fn main() {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
     assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);   
-    println!("HERE!") 
+    println!("HERE!");
+
+    let units = vec!["Celsius", "Delisle", "Fahrenheit", "Kelvin", "Newton", "Rankine", "Reaumer", "Romer"];
+
+    let mut rng = thread_rng();
+
+    let mut degrees: f64 = rng.gen_range(-1000.0..1000.0);
+    let mut unit1 = rng.gen_range(0..8);
+    let mut unit2 = rng.gen_range(0..8);
+    let mut count = 0;
+    while count < 1000 {
+        println!("{} deg {} = {} deg {}", degrees, units[unit1], conversions::convert_temperature(units[unit1], units[unit2], degrees), units[unit2]);
+        println!();
+        count += 1;
+        unit1 = rng.gen_range(0..8);
+        unit2 = rng.gen_range(0..8);
+        degrees = rng.gen_range(-1000.0..1000.0);
+    }
 }
 
 /*
