@@ -25,6 +25,6 @@ jobs:
     - name: Set NDK path
       run: echo "ANDROID_NDK_HOME=${{steps.setup-ndk.outputs.ndk-path}}" >> $GITHUB_ENV
     - name: Add targets
-      run: rustup target add x86_64-linux-android
+      run: rustup target add i686-linux-android
     - name: Build
-      run: cargo ndk --platform 21 --target x86_64 build --verbose
+      run: cargo ndk --platform 21 --target x86 build --verbose
