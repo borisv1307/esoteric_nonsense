@@ -133,14 +133,14 @@ pub fn scalar_multiplication(matrix: &mut Vec<Vec<f64>>, scalar: f64 ) -> Vec<Ve
 
 pub fn vec_vec_from_str(input: &str) -> Vec<Vec<f64>> {
     //TODO: Last ! causes problems
-    let matrix: Vec<Vec<f64>> = input.split("!").collect::<Vec<&str>>().iter().map(|x| x.split(";").collect::<Vec<&str>>().iter().map(|x| x.parse::<f64>().unwrap()).collect::<Vec<f64>>()).collect::<Vec<Vec<f64>>>();
+    let matrix: Vec<Vec<f64>> = input.replace('$', "").split("@").collect::<Vec<&str>>().iter().map(|x| x.split(";").collect::<Vec<&str>>().iter().map(|x| x.parse::<f64>().unwrap()).collect::<Vec<f64>>()).collect::<Vec<Vec<f64>>>();
     matrix
 }
 
 pub fn string_from_vec_vec (matrix: Vec<Vec<f64>>) -> String {
     //TODO: No final !
     let matrix: Vec<Vec<String>> = matrix.iter().map(|y| y.iter().map(ToString::to_string).collect()).collect();
-    format!("{:?}", matrix).replace('"', "").replace("]]", "").replace("],", "!").replace("[","").replace(",", ";").replace(" ", "")   
+    format!("{:?}", matrix).replace('"', "").replace("]]", "").replace("],", "@").replace("[","").replace(",", ";").replace(" ", "")   
 }
 
 //End I/O
