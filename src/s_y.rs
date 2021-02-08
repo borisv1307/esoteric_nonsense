@@ -276,13 +276,13 @@ pub fn calculate(input: &Vec<Token>) -> Result<f64, Vec<String>> {
                         match arg {
                             Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber(
                                 if (n as f64).sin() == 0.0 {
-                                    f64::NAN 
+                                    std::f64::NAN 
                                 } else {
                                     1.0 / (n as f64).sin()
                                 })),
                             Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber(
                                 if (n as f64).sin() == 0.0 {
-                                    f64::NAN 
+                                    std::f64::NAN 
                                 } else {
                                     1.0 / (n as f64).sin()
                                 })),
@@ -294,13 +294,13 @@ pub fn calculate(input: &Vec<Token>) -> Result<f64, Vec<String>> {
                         match arg {
                             Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber(
                                 if (n as f64).cos() == 0.0 {
-                                    f64::NAN 
+                                    std::f64::NAN 
                                 } else { 
                                     1.0 / (n as f64).cos() 
                                 })),
                             Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber(
                                 if (n as f64).cos() == 0.0 {
-                                    f64::NAN 
+                                    std::f64::NAN 
                                 } else { 
                                     1.0 / (n as f64).cos() 
                                 })),
@@ -312,13 +312,13 @@ pub fn calculate(input: &Vec<Token>) -> Result<f64, Vec<String>> {
                         match arg {
                             Some(Token::DecimalNumber(n)) => stack.push(Token::DecimalNumber(
                                 if (n as f64).tan() == 0.0 { 
-                                    f64::NAN 
+                                    std::f64::NAN 
                                 } else { 
                                     1.0 / (n as f64).tan()
                                 })),
                             Some(Token::WholeNumber(n)) => stack.push(Token::DecimalNumber(
                                 if (n as f64).tan() == 0.0 { 
-                                    f64::NAN 
+                                    std::f64::NAN 
                                 } else { 
                                     1.0 / (n as f64).tan()
                                 })),

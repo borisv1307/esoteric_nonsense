@@ -2,7 +2,7 @@ use std::ffi::{CString, CStr};
 use std::os::raw::{c_char};
 
 mod s_y;
-mod higher_math;
+//mod higher_math;
 
 use rand::{thread_rng, Rng};
 
@@ -32,6 +32,13 @@ fn main() {
         unit2 = rng.gen_range(0..8);
         degrees = rng.gen_range(-1000.0..1000.0);
     }
+}
+#[no_mangle]
+pub unsafe extern "C" fn conversions(conversion_type_in: *const c_char, from_unit_in: *const c_char, to_unit_in: *const c_char, units_in: f64) -> f64 {
+    let conversion_type: String = CStr::from_ptr(conversion_type_in).to_str().unwrap().to_string();
+    let from_unit: String = CStr::from_ptr(from_unit_in).to_str().unwrap().to_string();
+    let to_unit: String = CStr::from_ptr(to_unit_in).to_str().unwrap().to_string();
+    conversions::conversion_commander(conversion_type, from_unit, to_unit, units_in)
 }
 
 /*
@@ -116,7 +123,7 @@ pub fn infix_calculator(expression: String) -> f64 {
         Ok(result) => result,
         Err(e) => {
             println!("Errors: {:?}", e);
-            f64::NAN
+            std::f64::NAN
         }
     }
 }

@@ -1,7 +1,21 @@
 use std;
+pub fn conversion_commander(conversion_type: String, from_unit: String, to_unit: String, units: f64) -> f64 {
+    let conversion_type: &str = conversion_type.as_str();
+
+    match conversion_type {
+        "temperature" => {
+            convert_temperature(&from_unit, &to_unit, units)
+        },
+        _ => {
+            println!("Non supported Conversion");
+            std::f64::NAN
+        }
+    }
+}
+
 // Temperatures
 pub fn convert_temperature(from_unit: &str, to_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match to_unit {
         "Celsius" => {
             converted = to_celsius(from_unit, degrees);
@@ -35,7 +49,7 @@ pub fn convert_temperature(from_unit: &str, to_unit: &str, degrees: f64) -> f64 
 }
 
 fn to_celsius(from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = degrees;
@@ -67,13 +81,13 @@ fn to_celsius(from_unit: &str, degrees: f64) -> f64 {
     }
     if converted < -273.15 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
 
 fn to_delisle (from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = (100.0 - degrees) * 3.0 / 2.0;
@@ -105,13 +119,13 @@ fn to_delisle (from_unit: &str, degrees: f64) -> f64 {
     }
     if converted > 559.725 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
 
 fn to_fahrenheit (from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = degrees * 9.0 / 5.0 + 32.0;
@@ -143,13 +157,13 @@ fn to_fahrenheit (from_unit: &str, degrees: f64) -> f64 {
     }
     if converted < -459.67 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
 
 fn to_kelvin (from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = degrees + 273.15;
@@ -181,13 +195,13 @@ fn to_kelvin (from_unit: &str, degrees: f64) -> f64 {
     }
     if converted < 0.0 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
 
 fn to_newton (from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = degrees * 33.0 / 100.0;
@@ -219,13 +233,13 @@ fn to_newton (from_unit: &str, degrees: f64) -> f64 {
     }
     if converted < -90.1395 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
 
 fn to_rankine(from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = (degrees + 273.15) * 9.0 / 5.0;
@@ -257,13 +271,13 @@ fn to_rankine(from_unit: &str, degrees: f64) -> f64 {
     }
     if converted < 0.0 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
 
 fn to_reaumer (from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = degrees * 4.0 / 5.0;
@@ -295,13 +309,13 @@ fn to_reaumer (from_unit: &str, degrees: f64) -> f64 {
     }
     if converted < -218.52 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
 
 fn to_romer (from_unit: &str, degrees: f64) -> f64 {
-    let mut converted: f64 = f64::NAN;
+    let mut converted: f64 = std::f64::NAN;
     match from_unit {
         "Celsius" => {
             converted = degrees * 21.0 / 40.0 + 7.5;
@@ -333,7 +347,7 @@ fn to_romer (from_unit: &str, degrees: f64) -> f64 {
     }
     if converted < -135.90375 {
         println!("Below absolute zero");
-        converted = f64::NAN;
+        converted = std::f64::NAN;
     }
     converted
 }
