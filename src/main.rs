@@ -3,6 +3,7 @@ use std::os::raw::{c_char};
 
 mod s_y;
 mod matrices;
+mod matrix;
 
 #[cfg(test)] mod tests;
 
@@ -14,8 +15,19 @@ fn main() {
 }
 
 #[no_mangle]
+pub extern "C" fn matrix_call(command_input: *const c_char, matrixes_input: *const c_char, scalar: f64) -> *mut c_char {
+    let command_c_str: &CStr = unsafe { CStr::from_ptr(command_input) };
+    let matrices_c_str: &CStr = unsafe { CStr::from_ptr(matrixes_input)};
+    let command: &str = command_c_str.to_str().unwrap();
+    let matrixes: &str = matrices_c_str.to_str().unwrap();
+    let out_string = matrix::commander(command, matrixes, scalar);
+    let output = CString::new(out_string);
+    output.unwrap().into_raw()
+}
+
+#[no_mangle]
 pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
-    let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input)};
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input) };
     let expression: String = input_c_str.to_str().unwrap().to_string(); 
     let expression = expression.replace("x", &some_x.to_string());
     let result: f64 = infix_calculator(expression.to_string());
@@ -64,7 +76,7 @@ pub fn infix_calculator(expression: String) -> f64 {
         Ok(result) => result,
         Err(e) => {
             println!("Errors: {:?}", e);
-            f64::NAN
+            std::f64::NAN
         }
     }
 }
