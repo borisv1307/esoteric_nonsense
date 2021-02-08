@@ -35,7 +35,7 @@ fn main() {
     }
 }
 #[no_mangle]
-pub unsafe extern "C" fn conversions(conversion_type_in: *const c_char, from_unit_in: *const c_char, to_unit_in: *const c_char, units_in: f64) -> f64 {
+pub unsafe extern "C" fn conversions_call(conversion_type_in: *const c_char, from_unit_in: *const c_char, to_unit_in: *const c_char, units_in: f64) -> f64 {
     let conversion_type: String = CStr::from_ptr(conversion_type_in).to_str().unwrap().to_string();
     let from_unit: String = CStr::from_ptr(from_unit_in).to_str().unwrap().to_string();
     let to_unit: String = CStr::from_ptr(to_unit_in).to_str().unwrap().to_string();
@@ -54,7 +54,7 @@ pub extern "C" fn matrix_call(command_input: *const c_char, matrixes_input: *con
 }
 
 #[no_mangle]
-pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
+pub unsafe extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input)};
     let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let expression = expression.replace("x", &some_x.to_string());
