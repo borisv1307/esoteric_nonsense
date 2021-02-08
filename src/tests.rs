@@ -251,3 +251,36 @@ fn test_reduced_row_echelon(){
     let reduced = vec![vec![1.0, 0.0, 0.0, -8.0], vec![-0.0, 1.0, 0.0, 1.0], vec![-0.0, -0.0, 1.0, -2.0]];
     assert_eq!(matrix::reduced_row_echelon_form(rr_mat_to_red), reduced);
 }
+
+#[test]
+fn test_matrix_add(){
+    let a: Vec<Vec<f64>> = vec![vec![1.0, 2.0 , -1.0, -4.0], 
+                            vec![2.0, 3.0, -1.0, -11.0],
+                            vec![-2.0, 0.0, -3.0, 22.0]];
+    let b = vec![vec![1.0, 0.0, 0.0, -8.0],
+                vec![0.0, 1.0, 0.0, 1.0], 
+                vec![0.0, 0.0, 1.0, -2.0]];
+
+    let c = vec![vec![2.0, 2.0, -1.0, -12.0], 
+                vec![2.0, 4.0, -1.0, -10.0], 
+                vec![-2.0, -0.0, -2.0, 20.0]];
+    
+    assert_eq!(matrix::add_matrices(a, b), c);
+
+}
+
+#[test]
+fn test_matrix_subtract(){
+    let a: Vec<Vec<f64>> = vec![vec![1.0, 2.0 , -1.0, -4.0], 
+                            vec![2.0, 3.0, -1.0, -11.0],
+                            vec![-2.0, 0.0, -3.0, 22.0]];
+    let b = vec![vec![1.0, 0.0, 0.0, -8.0],
+                vec![0.0, 1.0, 0.0, 1.0], 
+                vec![0.0, 0.0, 1.0, -2.0]];
+
+    let c = vec![vec![0.0, 2.0, -1.0, 4.0], 
+                vec![2.0, 2.0, -1.0, -12.0], 
+                vec![-2.0, -0.0, -4.0, 24.0]];
+    
+    assert_eq!(matrix::subtract_matrices(a, b), c);
+}

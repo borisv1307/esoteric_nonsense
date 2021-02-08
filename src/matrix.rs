@@ -89,7 +89,7 @@ pub fn reduced_row_echelon_form(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
 
 //Begin Matrix Subtraction
 
-fn subtract_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+pub fn subtract_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut out: Vec<Vec<f64>> = Vec::new();
     for r in 0..matrix_a.len() {
         let mut row: Vec<f64> = Vec::with_capacity(matrix_a.len());
@@ -104,7 +104,7 @@ fn subtract_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Ve
 
 //Begin Matrix Addition
 
-fn add_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+pub fn add_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut out: Vec<Vec<f64>> = Vec::new();
     for r in 0..matrix_a.len() {
         let mut row: Vec<f64> = Vec::with_capacity(matrix_a.len());
