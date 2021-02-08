@@ -2,35 +2,84 @@ use std::ffi::{CString, CStr};
 use std::os::raw::{c_char};
 
 mod s_y;
+//mod higher_math;
+
+use rand::{thread_rng, Rng};
+
 
 #[cfg(test)] mod tests;
 
+mod conversions;
+mod matrix;
 
 fn main() {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
-    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);    
+    assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);   
+    println!("HERE!");
+
+    let units = vec!["Celsius", "Delisle", "Fahrenheit", "Kelvin", "Newton", "Rankine", "Reaumer", "Romer"];
+
+    let mut rng = thread_rng();
+
+    let mut degrees: f64 = rng.gen_range(-1000.0..1000.0);
+    let mut unit1 = rng.gen_range(0..8);
+    let mut unit2 = rng.gen_range(0..8);
+    let mut count = 0;
+    while count < 1000 {
+        println!("{} deg {} = {} deg {}", degrees, units[unit1], conversions::convert_temperature(units[unit1], units[unit2], degrees), units[unit2]);
+        println!();
+        count += 1;
+        unit1 = rng.gen_range(0..8);
+        unit2 = rng.gen_range(0..8);
+        degrees = rng.gen_range(-1000.0..1000.0);
+    }
+}
+#[no_mangle]
+pub unsafe extern "C" fn conversions(conversion_type_in: *const c_char, from_unit_in: *const c_char, to_unit_in: *const c_char, units_in: f64) -> f64 {
+    let conversion_type: String = CStr::from_ptr(conversion_type_in).to_str().unwrap().to_string();
+    let from_unit: String = CStr::from_ptr(from_unit_in).to_str().unwrap().to_string();
+    let to_unit: String = CStr::from_ptr(to_unit_in).to_str().unwrap().to_string();
+    conversions::conversion_commander(conversion_type, from_unit, to_unit, units_in)
+}
+
+#[no_mangle]
+pub extern "C" fn matrix_call(command_input: *const c_char, matrixes_input: *const c_char, scalar: f64) -> *mut c_char {
+    let command_c_str: &CStr = unsafe { CStr::from_ptr(command_input) };
+    let matrices_c_str: &CStr = unsafe { CStr::from_ptr(matrixes_input)};
+    let command: &str = command_c_str.to_str().unwrap();
+    let matrixes: &str = matrices_c_str.to_str().unwrap();
+    let out_string = matrix::commander(command, matrixes, scalar);
+    let output = CString::new(out_string);
+    output.unwrap().into_raw()
 }
 
 #[no_mangle]
 pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
-    let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
-    let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input)};
+    let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let expression = expression.replace("x", &some_x.to_string());
     let result: f64 = infix_calculator(expression.to_string());
     result
 }
 
 #[no_mangle]
-pub extern "C" fn calculate(input: *const c_char) -> *mut c_char {
+pub unsafe extern "C" fn calculate(input: *const c_char) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
-    let expression: String = input_c_str.to_str().unwrap().to_string(); 
+    let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
+    let result: f64 = infix_calculator(expression.to_string());
+    result
+}
+
+pub unsafe extern "C" fn calculate_string(input: *const c_char) -> *mut c_char {
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(input)};
+    let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let result: f64 = infix_calculator(expression.to_string());
     let output = CString::new(result.to_string());
     output.unwrap().into_raw()
     //result
 }
 
-// changed xsquared to func_of_x, add expression to arguments (//TODO: strings over ffi??)
+// changed xsquared to func_of_x, add expression to arguments
 #[no_mangle]
 pub unsafe extern "C" fn coord_vector_maker (input: *const c_char, x_lower: f64, x_upper: f64, y_lower: f64, y_upper: f64, x_precision: f64, y_precision: f64) ->  *mut CoordPair<f64> {
     let input_c_str: &CStr = CStr::from_ptr(input);
@@ -46,12 +95,19 @@ pub unsafe extern "C" fn coord_vector_maker (input: *const c_char, x_lower: f64,
     Box::into_raw(Box::new(c_out))
 }
 
+// calculates a f64 result from a string expression, returns NaN if runtime errors occur
 pub fn infix_calculator(expression: String) -> f64 {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
     assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);
     let r: Result<f64, Vec<String>> = s.calculate(&expression);
-    r.unwrap() 
-} 
+    match r {
+        Ok(result) => result,
+        Err(e) => {
+            println!("Errors: {:?}", e);
+            std::f64::NAN
+        }
+    }
+}
 
 pub fn make_all_x_strings (expression: String, x_lower: f64, x_upper: f64, x_precision: f64) -> Vec<String> {
     let x_fl_vector = x_vector_maker(x_lower, x_upper, x_precision);
