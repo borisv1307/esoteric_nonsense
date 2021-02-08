@@ -39,7 +39,7 @@ pub fn commander(command: &str, matrices_in: &str, scalar: f64) -> String {
 
 //Begin Reduced Row Echelon Form
 
-fn reduced_row_echelon_form(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+pub fn reduced_row_echelon_form(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut matrix_out: Vec<Vec<f64>> = matrix.to_vec();
     let mut pivot = 0;
     let row_count = matrix_out.len();
@@ -120,7 +120,7 @@ fn add_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec<f64
 
 //Begin Scalar Multiplication
 
-fn scalar_multiplication(matrix: &mut Vec<Vec<f64>>, scalar: f64 ) -> Vec<Vec<f64>> {
+pub fn scalar_multiplication(matrix: &mut Vec<Vec<f64>>, scalar: f64 ) -> Vec<Vec<f64>> {
     matrix.iter().map(|x| x.iter().map(|y| y * scalar).collect()).collect()
 }
 
@@ -151,7 +151,7 @@ fn minor( a: &mut Vec<Vec<f64>>, x: usize, y: usize) ->  Vec<Vec<f64>> {
     out_vec
 }
 
-fn determinant(matrix: &mut Vec<Vec<f64>>) -> f64 {
+pub fn determinant(matrix: &mut Vec<Vec<f64>>) -> f64 {
     match () {
         _ if (matrix.len() == 1) => {
             matrix[0][0]
@@ -168,7 +168,7 @@ fn determinant(matrix: &mut Vec<Vec<f64>>) -> f64 {
     }
 }
 
-fn permanent(matrix: &mut Vec<Vec<f64>>) -> f64 {
+pub fn permanent(matrix: &mut Vec<Vec<f64>>) -> f64 {
     match () {
         _ if (matrix.len() == 1) => {
             matrix[0][0]
@@ -187,7 +187,7 @@ fn permanent(matrix: &mut Vec<Vec<f64>>) -> f64 {
 
 //Begin Transpose
 
-fn matrix_transpose(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+pub fn matrix_transpose(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut transpose = vec![Vec::with_capacity(matrix.len()); matrix[0].len()];
     for row in matrix {
         for i in 0..row.len() {
