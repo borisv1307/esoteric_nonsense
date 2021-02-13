@@ -501,7 +501,7 @@ impl<'a> ShuntingYard<'a> {
         }
     }
 
-    /// calculate returns a 32-bit floating value after
+    /// calculate returns a 64-bit floating value after
     /// parsing the Reverse Polish Notation represented
     /// by the output_queue.
     pub fn calculate(&mut self, raw_input: &'a str) -> Result<f64, Vec<String>> {
