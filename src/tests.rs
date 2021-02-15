@@ -284,3 +284,17 @@ fn test_matrix_subtract(){
     
     assert_eq!(matrix::subtract_matrices(a, b), c);
 }
+
+#[test]
+fn test_matrix_from_string() {
+    let matrix_in_str = "&1.1;2.0@3.0;4.0@5.0;6.0$";
+    let matrix = vec![vec![1.1, 2.0], vec![3.0, 4.0], vec![5.0, 6.0]];
+    assert_eq!(matrix::parse_matrices(matrix_in_str), matrix);
+}
+
+#[test]
+fn test_string_from_matrix() {
+    let matrix = vec![vec![1.1, 2.0], vec![3.0, 4.0], vec![5.0, 6.0]];
+    let matrix_str = "&1.1;2@3;4@5;6$".to_string();
+    assert_eq!(matrix::string_from_vec_vec(matrix), matrix_str);
+}

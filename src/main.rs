@@ -43,12 +43,14 @@ pub unsafe extern "C" fn conversions_call(conversion_type_in: *const c_char, fro
 }
 
 #[no_mangle]
-pub extern "C" fn matrix_call(command_input: *const c_char, matrixes_input: *const c_char, scalar: f64) -> *mut c_char {
+pub unsafe extern "C" fn matrix_call(command_input: *const c_char, matrix_a_in: *const c_char, matrix_b_in: *const c_char, scalar_a: f64, scalar_b: f64) -> *mut c_char {
     let command_c_str: &CStr = unsafe { CStr::from_ptr(command_input) };
-    let matrices_c_str: &CStr = unsafe { CStr::from_ptr(matrixes_input)};
+    let matrix_a_c_str: &CStr = unsafe { CStr::from_ptr(matrix_a_in) };
+    let matrix_b_c_str: &CStr = unsafe { CStr::from_ptr(matrix_b_in) };
     let command: &str = command_c_str.to_str().unwrap();
-    let matrixes: &str = matrices_c_str.to_str().unwrap();
-    let out_string = matrix::commander(command, matrixes, scalar);
+    let matrix_a: &str = matrix_a_c_str.to_str().unwrap();
+    let matrix_b: &str = matrix_b_c_str.to_str().unwrap();
+    let out_string = matrix::commander(command, matrix_a, matrix_b, scalar_a, scalar_b);
     let output = CString::new(out_string);
     output.unwrap().into_raw()
 }

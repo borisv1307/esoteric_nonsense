@@ -1,35 +1,37 @@
-pub fn commander(command: &str, matrices_in: &str, scalar: f64) -> String {
-    let mut matrices_vec: Vec<Vec<Vec<f64>>> = parse_matrices(matrices_in);
-    let mut r_mat_vec = &mut matrices_vec;
-    let rr_mat = &mut r_mat_vec;
+pub fn commander(command: &str, matrix_a_in: &str, matrix_b_in: &str, scalar_1: f64, scalar_2: f64) -> String {
+    let mut matrix_a: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_a_in), scalar_1);
+    let mut r_mat_a = &mut matrix_a;
+    let rr_mat_a = &mut r_mat_a;
+
+    let mut matrix_b: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_b_in), scalar_2);
+    let mut r_mat_b = &mut matrix_b;
+    let rr_mat_b = &mut r_mat_b;
+    
     let mut result: String = "".to_string();
     match command {
         "add" => {
-            let matrix_a: Vec<Vec<f64>> = rr_mat[0].iter().map(|a| a.to_owned()).collect::<Vec<Vec<f64>>>();
-            let matrix_b: Vec<Vec<f64>> = rr_mat[1].iter().map(|a| a.to_owned()).collect::<Vec<Vec<f64>>>(); 
             result = string_from_vec_vec(add_matrices(matrix_a, matrix_b));
         },
         "subtract" => {
-            let matrix_a: Vec<Vec<f64>> = rr_mat[0].iter().map(|a| a.to_owned()).collect::<Vec<Vec<f64>>>();
-            let matrix_b: Vec<Vec<f64>> = rr_mat[1].iter().map(|a| a.to_owned()).collect::<Vec<Vec<f64>>>(); 
             result = string_from_vec_vec(subtract_matrices(matrix_a, matrix_b));
         },
-        "scalar_multiplication" => {
-            result = string_from_vec_vec(scalar_multiplication(&mut rr_mat[0], scalar));
-        },
         "transpose" => {
-            result = string_from_vec_vec(matrix_transpose(&mut rr_mat[0]));
+            result = string_from_vec_vec(matrix_transpose(rr_mat_a));
         },
         "determinant" => {
-            result = determinant(&mut rr_mat[0]).to_string();
+            result = determinant(rr_mat_a).to_string();
         },
         "permanent" => {
-            result = permanent(&mut rr_mat[0]).to_string();
+            result = permanent(rr_mat_a).to_string();
         },
         "reduced_row_echelon" => {
-            result = string_from_vec_vec(reduced_row_echelon_form(&mut rr_mat[0]))
+            result = string_from_vec_vec(reduced_row_echelon_form(rr_mat_a))
+        },
+        "multiply" => {
+            result = string_from_vec_vec(matrix_multiplication(r_mat_a, r_mat_b))
         }
         _ => {
+            result = "invalid command".to_string();
             println!("invalid command");
         }
     }
@@ -37,8 +39,21 @@ pub fn commander(command: &str, matrices_in: &str, scalar: f64) -> String {
     result
 }
 
-//Begin Reduced Row Echelon Form
+//Begin Matrix Multiplication
+fn matrix_multiplication(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>) -> Vec<Vec<f64>>{
+    let mut out = vec![vec![0.0; a.len()]; b[0].len()];
+    for i in 0..a.len() {
+        for j in 0..b[0].len() {
+            for k in 0..a[0].len() {
+                out[i][j] += a[i][k] * b[k][j]; 
+            }
+        }
+    }
+    out
+}
+//End Matrix Multiplication
 
+//Begin Reduced Row Echelon Form
 pub fn reduced_row_echelon_form(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut matrix_out: Vec<Vec<f64>> = matrix.to_vec();
     let mut pivot = 0;
@@ -84,11 +99,9 @@ pub fn reduced_row_echelon_form(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     }
     matrix_out
 }
-
 //End Reduced Row Echelon Form
 
 //Begin Matrix Subtraction
-
 pub fn subtract_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut out: Vec<Vec<f64>> = Vec::new();
     for r in 0..matrix_a.len() {
@@ -103,7 +116,6 @@ pub fn subtract_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Ve
 //End Matrix Subtraction
 
 //Begin Matrix Addition
-
 pub fn add_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut out: Vec<Vec<f64>> = Vec::new();
     for r in 0..matrix_a.len() {
@@ -115,19 +127,15 @@ pub fn add_matrices(matrix_a: Vec<Vec<f64>>, matrix_b: Vec<Vec<f64>>) -> Vec<Vec
     }
     out
 }
-
 //End Matrix Addition
 
 //Begin Scalar Multiplication
-
 pub fn scalar_multiplication(matrix: &mut Vec<Vec<f64>>, scalar: f64 ) -> Vec<Vec<f64>> {
     matrix.iter().map(|x| x.iter().map(|y| y * scalar).collect()).collect()
 }
-
 //End Scalar Multiplication
 
 //Begin Determinant/Permanent
-
 fn minor( a: &mut Vec<Vec<f64>>, x: usize, y: usize) ->  Vec<Vec<f64>> {
     let mut out_vec: Vec<Vec<f64>> = vec![vec![0.0; a.len() - 1]; a.len() -1];
     for i in 0..a.len()-1 {
@@ -182,11 +190,9 @@ pub fn permanent(matrix: &mut Vec<Vec<f64>>) -> f64 {
         }
     }
 }
-
 //End Determinant/Permanent
 
 //Begin Transpose
-
 pub fn matrix_transpose(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut transpose = vec![Vec::with_capacity(matrix.len()); matrix[0].len()];
     for row in matrix {
@@ -196,20 +202,16 @@ pub fn matrix_transpose(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     }
     transpose
 }
-
 //End Transpose
 
 //Begin I/O
-
-fn parse_matrices(matrices_in: &str) -> Vec<Vec<Vec<f64>>> {
-    let matrices_parsed: Vec<Vec<Vec<f64>>> = matrices_in.split("$&").collect::<Vec<&str>>().iter().map(|i| i.split("@").collect::<Vec<&str>>().iter().map(|x| x.split(";").collect::<Vec<&str>>().iter().map(|x| x.parse::<f64>().unwrap()).collect::<Vec<f64>>()).collect::<Vec<Vec<f64>>>()).collect::<Vec<Vec<Vec<f64>>>>();
-    matrices_parsed
+pub fn parse_matrices(matrix_in: &str) -> Vec<Vec<f64>> {
+    let matrix_parsed: Vec<Vec<f64>> = matrix_in.replace('&', "").replace('$', "").split("@").collect::<Vec<&str>>().iter().map(|row| row.split(";").collect::<Vec<&str>>().iter().map(|element| element.parse::<f64>().unwrap()).collect::<Vec<f64>>()).collect::<Vec<Vec<f64>>>();
+    matrix_parsed
 }
 
-fn string_from_vec_vec(matrix: Vec<Vec<f64>>) -> String {
-    //TODO: does Alisha need this formatted differently?
+pub fn string_from_vec_vec(matrix: Vec<Vec<f64>>) -> String {
     let matrix: Vec<Vec<String>> = matrix.iter().map(|y| y.iter().map(ToString::to_string).collect()).collect();
-    format!("{:?}", matrix).replace('"', "").replace("]]", "").replace("],", "@").replace("[","").replace(",", ";").replace(" ", "")   
+    format!("{:?}", matrix).replace('"', "").replace("[[","&").replace("]]", "$").replace("],", "@").replace("[","").replace(",", ";").replace(" ", "")   
 }
-
 //End I/O
