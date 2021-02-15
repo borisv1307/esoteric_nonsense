@@ -39,6 +39,87 @@ pub fn commander(command: &str, matrix_a_in: &str, matrix_b_in: &str, scalar_1: 
     result
 }
 
+//Begin LU Decomposition
+fn lower_upper_decomposition(matrix: &Vec<Vec<f64>>) -> (Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>,) {
+    if !is_square(&matrix) {
+        (vec![vec![std::f64::NAN]], vec![vec![std::f64::NAN]], vec![vec![std::f64::NAN]], vec![vec![std::f64::NAN]])
+    } else {
+        let n = matrix.len();
+        let mut lower: Vec<Vec<f64>> = identity_matrix(n);
+        let mut upper: Vec<Vec<f64>> = zero_matrix(n, n);
+        let permuted = pivotize_matrix(&matrix);
+        let matrix_prime = matrix_multiplication(&permuted, &matrix);
+
+        for j in 0..n {
+            lower[j][j] = 1.0;
+            for i in 0..j+1 {
+                let mut sum = 0.0;
+                for k in 0..i {
+                    sum += upper[k][j] * lower[i][k];
+                }
+                upper[i][j] = matrix_prime[i][j] - sum
+            }
+            for i in j..n {
+                let mut sum = 0.0;
+                for k in 0..j {
+                    sum += upper[k][j] * lower[i][k];
+                }
+                lower[i][j] = (matrix_prime[i][j] - sum) / upper[j][j];
+            }
+        }
+        (matrix_prime, lower, upper, permuted)
+    }
+    
+}
+
+fn pivotize_matrix(matrix: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    let mut id = identity_matrix(matrix.len());
+    for i in 0..matrix.len() {
+        let mut max = matrix[i][i];
+        let mut row = i;
+        for j in i..matrix.len()-1 {
+            if matrix[j][i] > max {
+                max = matrix[j][i];
+                row = j;
+            }
+        }
+        if row != i {
+            id.swap(row, i);
+        }
+    }
+    id
+}
+
+fn zero_matrix(rows: usize, cols: usize) -> Vec<Vec<f64>> {
+    let mut matrix = Vec::with_capacity(cols);
+    for _ in 0..rows {
+        let mut col: Vec<f64> = Vec::with_capacity(rows);
+        for _ in 0..cols {
+            col.push(0.0);
+        }
+        matrix.push(col);
+    }
+    matrix
+}
+
+fn identity_matrix(n: usize) -> Vec<Vec<f64>> {
+    let mut i_matrix = Vec::with_capacity(n);
+    for i in 0..n {
+        let mut col: Vec<f64> = Vec::with_capacity(n);
+        for j in 0..n {
+            if i == j {
+                col.push(1.0);
+            } else {
+                col.push(0.0);
+            }
+        }
+        i_matrix.push(col);
+    }
+    i_matrix
+}
+//End LU Decomposition
+
+
 //Begin Matrix Multiplication
 fn matrix_multiplication(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>) -> Vec<Vec<f64>>{
     let mut out = vec![vec![0.0; a.len()]; b[0].len()];
@@ -203,6 +284,17 @@ pub fn matrix_transpose(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     transpose
 }
 //End Transpose
+
+//Begin Check Matrices
+fn is_square(matrix: &Vec<Vec<f64>>) -> bool {
+    matrix.len() == matrix[0].len()
+}
+
+fn is_rref_compat(matrix: &Vec<Vec<f64>>) -> bool {
+    matrix.len() + 1 == matrix[0].len()
+    
+}
+//End Check Matrices
 
 //Begin I/O
 pub fn parse_matrices(matrix_in: &str) -> Vec<Vec<f64>> {
