@@ -40,7 +40,7 @@ pub fn commander(command: &str, matrix_a_in: &str, matrix_b_in: &str, scalar_1: 
 }
 
 //Begin LU Decomposition
-fn lower_upper_decomposition(matrix: &Vec<Vec<f64>>) -> (Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>,) {
+pub fn lower_upper_decomposition(matrix: &Vec<Vec<f64>>) -> (Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>, Vec<Vec<f64>>,) {
     if !is_square(&matrix) {
         (vec![vec![std::f64::NAN]], vec![vec![std::f64::NAN]], vec![vec![std::f64::NAN]], vec![vec![std::f64::NAN]])
     } else {
@@ -72,7 +72,7 @@ fn lower_upper_decomposition(matrix: &Vec<Vec<f64>>) -> (Vec<Vec<f64>>, Vec<Vec<
     
 }
 
-fn pivotize_matrix(matrix: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+pub fn pivotize_matrix(matrix: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut id = identity_matrix(matrix.len());
     for i in 0..matrix.len() {
         let mut max = matrix[i][i];
@@ -90,7 +90,7 @@ fn pivotize_matrix(matrix: &Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     id
 }
 
-fn zero_matrix(rows: usize, cols: usize) -> Vec<Vec<f64>> {
+pub fn zero_matrix(rows: usize, cols: usize) -> Vec<Vec<f64>> {
     let mut matrix = Vec::with_capacity(cols);
     for _ in 0..rows {
         let mut col: Vec<f64> = Vec::with_capacity(rows);
@@ -102,7 +102,7 @@ fn zero_matrix(rows: usize, cols: usize) -> Vec<Vec<f64>> {
     matrix
 }
 
-fn identity_matrix(n: usize) -> Vec<Vec<f64>> {
+pub fn identity_matrix(n: usize) -> Vec<Vec<f64>> {
     let mut i_matrix = Vec::with_capacity(n);
     for i in 0..n {
         let mut col: Vec<f64> = Vec::with_capacity(n);
@@ -121,7 +121,7 @@ fn identity_matrix(n: usize) -> Vec<Vec<f64>> {
 
 
 //Begin Matrix Multiplication
-fn matrix_multiplication(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>) -> Vec<Vec<f64>>{
+pub fn matrix_multiplication(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>) -> Vec<Vec<f64>>{
     let mut out = vec![vec![0.0; a.len()]; b[0].len()];
     for i in 0..a.len() {
         for j in 0..b[0].len() {
@@ -286,11 +286,11 @@ pub fn matrix_transpose(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
 //End Transpose
 
 //Begin Check Matrices
-fn is_square(matrix: &Vec<Vec<f64>>) -> bool {
+pub fn is_square(matrix: &Vec<Vec<f64>>) -> bool {
     matrix.len() == matrix[0].len()
 }
 
-fn is_rref_compat(matrix: &Vec<Vec<f64>>) -> bool {
+pub fn is_rref_compat(matrix: &Vec<Vec<f64>>) -> bool {
     matrix.len() + 1 == matrix[0].len()
     
 }
