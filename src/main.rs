@@ -6,11 +6,12 @@ mod higher_math;
 
 #[cfg(test)] mod tests;
 
+mod conversions;
+mod matrix;
 
 fn main() {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
     assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);   
-    println!("HERE!") 
 }
 
 /*
