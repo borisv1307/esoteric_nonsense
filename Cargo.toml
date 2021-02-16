@@ -1,11 +1,11 @@
 [package]
-name = "calc_w1_fin"
+name = "eq_solve"
 version = "0.1.0"
-authors = ["trevorschirra"]
+authors = ["Trevor <71519259+TPXS-Drexel@users.noreply.github.com>"]
 edition = "2018"
 
 [lib]
-name = "calc_2"
+name = "calc"
 path = "src/main.rs"
 crate-type = ["cdylib"]
 

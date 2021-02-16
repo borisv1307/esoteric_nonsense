@@ -1,0 +1,21 @@
+fn euclid_gcd_rec(m: i64, n: i64) -> i64 {
+    if m == 0 {
+        n.abs()
+    } else {
+        euclid_gcd_rec(n % m, m)
+    }
+}
+
+fn euclid_gcd_iter(mut m: i64, mut n: i64) -> i64 {
+    while m != 0 {
+        let m_hold = m;
+        m = n % m;
+        n = m_hold;
+    }
+    n.abs()
+}
+
+fn lcm(m: i64, n: i64) -> i64 {
+    m.abs() * n.abs() / euclid_gcd_rec(m, n)
+}
+

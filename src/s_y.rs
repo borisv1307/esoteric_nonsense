@@ -116,6 +116,8 @@ impl<'a> Lexer<'a> {
             Some(c) if c == ')' => self.ast.push(Token::RightParenthesis),
             Some(c) if c == ',' => self.ast.push(Token::Comma),
             Some(c) if c == 'x' => self.ast.push(Token::Variable(c)),
+            Some(c) if c == '𝜋' => self.ast.push(Token::DecimalNumber(std::f64::consts::PI)),
+            Some(c) if c == '𝑒' => self.ast.push(Token::DecimalNumber(std::f64::consts::E)),
             Some(c) if c.is_alphabetic() && c != 'x' => {
                 let ident = self.consume_identifier();
                 self.ast.push(Token::FunctionCall(ident));
@@ -483,7 +485,7 @@ fn operate(operator: char, left: f64, right: f64) -> f64 {
 
 
 /// The ShuntingYard struct transforms an expression
-/// to a 32-bit floating point value
+/// to a 64-bit floating point value
 pub struct ShuntingYard<'a> {
     lexer: Lexer<'a>,
     output_queue: Vec<Token>,

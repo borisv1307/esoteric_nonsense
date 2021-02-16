@@ -2,10 +2,7 @@ use std::ffi::{CString, CStr};
 use std::os::raw::{c_char};
 
 mod s_y;
-//mod higher_math;
-
-use rand::{thread_rng, Rng};
-
+mod higher_math;
 
 #[cfg(test)] mod tests;
 
@@ -15,48 +12,41 @@ mod matrix;
 fn main() {
     let mut s: s_y::ShuntingYard = s_y::ShuntingYard::new();
     assert_eq!(s.calculate("2 + 3").unwrap(), 5.0);   
-    println!("HERE!");
+}
 
-    let units = vec!["Celsius", "Delisle", "Fahrenheit", "Kelvin", "Newton", "Rankine", "Reaumer", "Romer"];
+/*
+#[no_mangle]
+pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const c_char, var_in: *const c_char) -> *mut c_char {
+    let command: String = CStr::from_ptr(command_in).to_str().unwrap().to_string();
+    let exp_eq: String = CStr::from_ptr(exp_eq_in).to_str().unwrap().to_string().replace("^", "**");
+    let var: String = CStr::from_ptr(var_in).to_str().unwrap().to_string();
 
-    let mut rng = thread_rng();
-
-    let mut degrees: f64 = rng.gen_range(-1000.0..1000.0);
-    let mut unit1 = rng.gen_range(0..8);
-    let mut unit2 = rng.gen_range(0..8);
-    let mut count = 0;
-    while count < 1000 {
-        println!("{} deg {} = {} deg {}", degrees, units[unit1], conversions::convert_temperature(units[unit1], units[unit2], degrees), units[unit2]);
-        println!();
-        count += 1;
-        unit1 = rng.gen_range(0..8);
-        unit2 = rng.gen_range(0..8);
-        degrees = rng.gen_range(-1000.0..1000.0);
+    let command= "Solve";
+    
+    let mut result: String = "Error".to_string();
+    match &command as &str {
+        "Solve" => {
+            result = higher_math::solve_rational(exp_eq, var);
+        }
+        "PolyGCD" => {
+            let tostr = &exp_eq as &str;
+            let v: Vec<&str> = "Mary had a little lamb."
+                .split(|c| c == ',')
+                .collect();
+            let polynomials: Vec<String> = v.into_iter().map(|e| e.to_string()).collect();
+            result  = higher_math::multi_gcd(polynomials , var);
+        }
+        _ => {
+            //TODO: add call for shunting yard in abcense of command
+        }
     }
-}
-#[no_mangle]
-pub unsafe extern "C" fn conversions_call(conversion_type_in: *const c_char, from_unit_in: *const c_char, to_unit_in: *const c_char, units_in: f64) -> f64 {
-    let conversion_type: String = CStr::from_ptr(conversion_type_in).to_str().unwrap().to_string();
-    let from_unit: String = CStr::from_ptr(from_unit_in).to_str().unwrap().to_string();
-    let to_unit: String = CStr::from_ptr(to_unit_in).to_str().unwrap().to_string();
-    conversions::conversion_commander(conversion_type, from_unit, to_unit, units_in)
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn matrix_call(command_input: *const c_char, matrix_a_in: *const c_char, matrix_b_in: *const c_char, scalar_a: f64, scalar_b: f64) -> *mut c_char {
-    let command_c_str: &CStr = unsafe { CStr::from_ptr(command_input) };
-    let matrix_a_c_str: &CStr = unsafe { CStr::from_ptr(matrix_a_in) };
-    let matrix_b_c_str: &CStr = unsafe { CStr::from_ptr(matrix_b_in) };
-    let command: &str = command_c_str.to_str().unwrap();
-    let matrix_a: &str = matrix_a_c_str.to_str().unwrap();
-    let matrix_b: &str = matrix_b_c_str.to_str().unwrap();
-    let out_string = matrix::commander(command, matrix_a, matrix_b, scalar_a, scalar_b);
-    let output = CString::new(out_string);
+    let output = CString::new(result.to_string());
     output.unwrap().into_raw()
 }
+*/
 
 #[no_mangle]
-pub unsafe extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
+pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
     let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input)};
     let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let expression = expression.replace("x", &some_x.to_string());
@@ -106,7 +96,7 @@ pub fn infix_calculator(expression: String) -> f64 {
         Ok(result) => result,
         Err(e) => {
             println!("Errors: {:?}", e);
-            std::f64::NAN
+            f64::NAN
         }
     }
 }
