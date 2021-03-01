@@ -3,10 +3,6 @@ pub fn commander(operation: &str, command_1: &str, matrix_1_in: &str, command_2:
     let mut r_mat_a = &mut matrix_a;
     let rr_mat_a = &mut r_mat_a;
 
-    let mut matrix_b: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_2_in), scalar_2);
-    let mut r_mat_b = &mut matrix_b;
-    let rr_mat_b = &mut r_mat_b;
-    
     let mut result: String = "".to_string();
 
     if b_empty {
@@ -34,6 +30,11 @@ pub fn commander(operation: &str, command_1: &str, matrix_1_in: &str, command_2:
         }
         result
     } else {
+
+        let mut matrix_b: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_2_in), scalar_2);
+    let mut r_mat_b = &mut matrix_b;
+    let rr_mat_b = &mut r_mat_b;
+    
         let mut is_float_a: bool;
         let mut is_float_b: bool;
         match command_1 {
