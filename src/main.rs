@@ -44,6 +44,22 @@ pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const 
 }
 */
 
+#[no_mangle]
+pub unsafe extern "C" fn matrices(op_ptr: *const c_char, cmd_1_ptr: *const c_char, mat_1_ptr: *const c_char, cmd_2_ptr: *const c_char, mat_2_ptr: *const c_char, scalar_1: f64, scalar_2: f64, b_empty: bool) -> *mut c_char {
+    let op_c_str: &CStr = unsafe { CStr::from_ptr(op_ptr) };
+    let cmd_1_c_str: &CStr = unsafe { CStr::from_ptr(cmd_1_ptr) };
+    let mat_1_c_str: &CStr = unsafe { CStr::from_ptr(mat_1_ptr) };
+    let cmd_2_c_str: &CStr = unsafe { CStr::from_ptr(cmd_2_ptr) };
+    let mat_2_c_str: &CStr = unsafe { CStr::from_ptr(mat_2_ptr) };
+
+    let operation = op_c_str.to_str().unwrap();
+    let command_1 = cmd_1_c_str.to_str().unwrap();
+    let matrix_1 = mat_1_c_str.to_str().unwrap();
+    let command_2 = cmd_2_c_str.to_str().unwrap();
+    let matrix_2 = mat_2_c_str.to_str().unwrap();
+    
+    CString::new(matrix::commander(operation, command_1, matrix_1, command_2, matrix_2, scalar_1, scalar_2, b_empty)).unwrap().into_raw()
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn conversions(conversion_type: *const c_char, from_unit: *const c_char, to_unit: *const c_char, units: f64) -> f64 {

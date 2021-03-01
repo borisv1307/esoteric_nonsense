@@ -1,42 +1,174 @@
-pub fn commander(command: &str, matrix_a_in: &str, matrix_b_in: &str, scalar_1: f64, scalar_2: f64) -> String {
-    let mut matrix_a: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_a_in), scalar_1);
+pub fn commander(operation: &str, command_1: &str, matrix_1_in: &str, command_2: &str, matrix_2_in: &str, scalar_1: f64, scalar_2: f64, b_empty: bool) -> String {
+    let mut matrix_a: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_1_in), scalar_1);
     let mut r_mat_a = &mut matrix_a;
     let rr_mat_a = &mut r_mat_a;
 
-    let mut matrix_b: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_b_in), scalar_2);
+    let mut matrix_b: Vec<Vec<f64>> = scalar_multiplication(&mut parse_matrices(matrix_2_in), scalar_2);
     let mut r_mat_b = &mut matrix_b;
     let rr_mat_b = &mut r_mat_b;
     
     let mut result: String = "".to_string();
-    match command {
-        "add" => {
-            result = string_from_vec_vec(add_matrices(matrix_a, matrix_b));
-        },
-        "subtract" => {
-            result = string_from_vec_vec(subtract_matrices(matrix_a, matrix_b));
-        },
+
+    if b_empty {
+        let mut is_float_a: bool;
+
+        match command_1 {
+            "determinant" => {
+                is_float_a = true;
+            },
+            "permanent" => {
+                is_float_a = true;
+            },
+            _ => {
+                is_float_a = false;
+            }
+        }
+
+        match () {
+            _ if is_float_a => {
+                result = func_match_float(command_1, rr_mat_a).to_string();
+            },
+            _ => {
+                result = string_from_vec_vec(func_match_matrix(command_1, rr_mat_a));
+            }
+        }
+        result
+    } else {
+        let mut is_float_a: bool;
+        let mut is_float_b: bool;
+        match command_1 {
+            "determinant" => {
+                is_float_a = true;
+            },
+            "permanent" => {
+                is_float_a = true;
+            },
+            _ => {
+                is_float_a = false;
+            }
+        }
+        match command_2 {
+            "determinant" => {
+                is_float_b = true;
+            },
+            "permanent" => {
+                is_float_b = true;
+            },
+            _ => {
+                is_float_b = false;
+            }
+        }
+        //
+        match () {
+            _ if (is_float_a && is_float_b) => {
+                match operation {
+                    "add" => {
+                        result = (func_match_float(command_1, r_mat_a) + func_match_float(command_2, r_mat_b)).to_string(); 
+                    },
+                    "subtract" => {
+                        result = (func_match_float(command_1, r_mat_a) - func_match_float(command_2, r_mat_b)).to_string(); 
+                    },
+                    "multiply" => {
+                        result = (func_match_float(command_1, r_mat_a) * func_match_float(command_2, r_mat_b)).to_string(); 
+                    },
+                    "divide" => {
+                        result = (func_match_float(command_1, r_mat_a) / func_match_float(command_2, r_mat_b)).to_string(); 
+                    
+                    },
+                    _ => {
+                        result = "invalid operation".to_string();
+                    }
+                }
+            },
+            _ if (is_float_a && !is_float_b) => {
+                match operation {
+                    "add" => {
+                        result = "invalid operation".to_string();
+                    }, 
+                    "subtract" => {
+                        result = "invalid operation".to_string();
+                    },
+                    "multiply" => {
+                        result = string_from_vec_vec(scalar_multiplication(&mut func_match_matrix(command_2, r_mat_b), func_match_float(command_1, r_mat_a)));
+                    }
+                    "divide" => {
+                        result = string_from_vec_vec(scalar_multiplication(&mut func_match_matrix(command_2, r_mat_b), 1.0 / func_match_float(command_1, r_mat_a)));
+                    },
+                    _ => {
+                        result = "invalid operation".to_string();
+                    }
+                }
+            },
+            _ if (!is_float_a && is_float_b) => {
+                match operation {
+                    "add" => {
+                        result = "invalid operation".to_string();
+                    }, 
+                    "subtract" => {
+                        result = "invalid operation".to_string();
+                    },
+                    "multiply" => {
+                        result = string_from_vec_vec(scalar_multiplication(&mut func_match_matrix(command_1, r_mat_a), func_match_float(command_1, r_mat_b)));
+                    }
+                    "divide" => {
+                        result = string_from_vec_vec(scalar_multiplication(&mut matrix_inverse(&mut func_match_matrix(command_1, r_mat_a)), func_match_float(command_2, r_mat_b)));
+                    },
+                    _ => {
+                        result = "invalid operation".to_string();
+                    }
+                }
+            },
+            _ => { // neither return floats
+                match operation {
+                    "add" => {
+                        result = string_from_vec_vec(add_matrices(func_match_matrix(command_1, r_mat_a), func_match_matrix(command_2, r_mat_b)));
+                    },
+                    "subtract" => {
+                        result = string_from_vec_vec(subtract_matrices(func_match_matrix(command_1, r_mat_a), func_match_matrix(command_2, r_mat_b)));
+                    },
+                    "multiply" => {
+                        result = string_from_vec_vec(matrix_multiplication(&mut func_match_matrix(command_1, r_mat_a), &mut func_match_matrix(command_2, r_mat_b)));
+                    },
+                    
+                    "divide" => {
+                        result = string_from_vec_vec(matrix_multiplication(&mut func_match_matrix(command_1, r_mat_a), &mut matrix_inverse(&mut func_match_matrix(command_2, r_mat_b))));
+                    },
+
+                    _ => {
+                        result = "placeholder".to_string();
+                    }
+                }
+
+            }
+        }
+        result
+    }
+}
+
+fn func_match_matrix<'a>(function: &str, matrix: &'a mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+    match function {
         "transpose" => {
-            result = string_from_vec_vec(matrix_transpose(rr_mat_a));
-        },
-        "determinant" => {
-            result = determinant(rr_mat_a).to_string();
-        },
-        "permanent" => {
-            result = permanent(rr_mat_a).to_string();
+            matrix_transpose(matrix)
         },
         "reduced_row_echelon" => {
-            result = string_from_vec_vec(reduced_row_echelon_form(rr_mat_a))
+            reduced_row_echelon_form(matrix)
         },
-        "multiply" => {
-            result = string_from_vec_vec(matrix_multiplication(r_mat_a, r_mat_b))
-        }
         _ => {
-            result = "invalid command".to_string();
-            println!("invalid command");
+            matrix.to_owned()
         }
     }
+}
 
-    result
+fn func_match_float<'a>(function: &str, matrix: &'a mut Vec<Vec<f64>>) -> f64 {
+    match function {
+        "determinant" => {
+            determinant(matrix)
+        },
+        "permanent" => {
+            permanent(matrix)
+        },
+        _ => std::f64::NAN
+    }
 }
 
 //Begin LU Decomposition
