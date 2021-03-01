@@ -45,9 +45,25 @@ pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const 
 }
 */
 
+
 #[no_mangle]
-pub extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
-    let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input)};
+pub unsafe extern "C" fn conversions(conversion_type: *const c_char, from_unit: *const c_char, to_unit: *const c_char, units: f64) -> f64 {
+    let conv_type_c_str: &CStr = unsafe { CStr::from_ptr(conversion_type) };
+    let from_unit_c_str: &CStr = unsafe { CStr::from_ptr(from_unit) };
+    let to_unit_c_str: &CStr = unsafe { CStr::from_ptr(to_unit) };
+
+    let conversion_type_string: String = conv_type_c_str.to_str().unwrap().to_string();
+    let from_unit_string: String = from_unit_c_str.to_str().unwrap().to_string();
+    let to_unit_string: String = to_unit_c_str.to_str().unwrap().to_string();
+
+    conversions::conversion_commander(conversion_type_string, from_unit_string, to_unit_string, units)
+}
+
+
+
+#[no_mangle]
+pub unsafe extern "C" fn calculate_for_graph(expression_input: *const c_char, some_x: f64) -> f64 {
+    let input_c_str: &CStr = unsafe { CStr::from_ptr(expression_input) };
     let expression: String = input_c_str.to_str().unwrap().to_string().replace("`", "-"); 
     let expression = expression.replace("x", &some_x.to_string());
     let result: f64 = infix_calculator(expression.to_string());
