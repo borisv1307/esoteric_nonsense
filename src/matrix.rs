@@ -134,6 +134,79 @@ pub fn matrix_multiplication(a: &Vec<Vec<f64>>, b: &Vec<Vec<f64>>) -> Vec<Vec<f6
 }
 //End Matrix Multiplication
 
+//Begin Matrix Inversion
+fn matrix_inverse(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>>{
+    let len = matrix.len();
+    let mut aug = zero_matrix(len, len * 2);
+    for i in 0..len {
+        for j in 0.. len {
+            aug[i][j] = matrix[i][j];
+        }
+        aug[i][i + len] = 1.0;
+    }
+
+    gauss_jordan_general(&mut aug);
+    
+    
+    let mut unaug = zero_matrix(len, len);
+    for i in 0..len {
+        for j in 0..len {
+            unaug[i][j] = aug[i][j+len];
+        }
+    }
+    unaug
+}
+//End Matrix Inversion
+
+//Begin Generalised Reduced Row Echelon Form
+fn gauss_jordan_general(matrix: &mut Vec<Vec<f64>>) {
+    let mut lead = 0;
+    let row_count = matrix.len();
+    let col_count = matrix[0].len();
+
+    for r in 0..row_count {
+        if col_count <= lead {
+            break;
+        }
+        let mut i = r;
+        while matrix[i][lead] == 0.0 {
+            i = i + 1;
+            if row_count == i {
+                i = r;
+                lead = lead + 1;
+                if col_count == lead {
+                    break;
+                }
+            }
+        }
+
+        let temp = matrix[i].to_owned();
+        matrix[i] = matrix[r].to_owned();
+        matrix[r] = temp.to_owned();
+
+        if matrix[r][lead] != 0.0 {
+            let div = matrix[r][lead];
+            for j in 0..col_count {
+                matrix[r][j] = matrix[r][j] / div;
+            }
+        }
+
+        for k in 0..row_count {
+            if k != r {
+                let mult = matrix[k][lead];
+                for j in 0..col_count {
+                    matrix[k][j] = matrix[k][j] - matrix[r][j] * mult;
+                }
+            }
+        }
+        lead = lead + 1;
+
+    }
+    //matrix.to_owned()
+}
+
+// End Generalised Reduced Row Echelon Form
+
 //Begin Reduced Row Echelon Form
 pub fn reduced_row_echelon_form(matrix: &mut Vec<Vec<f64>>) -> Vec<Vec<f64>> {
     let mut matrix_out: Vec<Vec<f64>> = matrix.to_vec();

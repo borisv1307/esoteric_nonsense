@@ -2,7 +2,6 @@ use std::ffi::{CString, CStr};
 use std::os::raw::{c_char};
 
 mod s_y;
-mod higher_math;
 
 #[cfg(test)] mod tests;
 
