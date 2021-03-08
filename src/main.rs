@@ -45,12 +45,19 @@ pub unsafe extern "C" fn high_math(command_in: *const c_char, exp_eq_in: *const 
 */
 
 #[no_mangle]
-pub unsafe extern "C" fn matrices(op_ptr: *const c_char, cmd_1_ptr: *const c_char, mat_1_ptr: *const c_char, cmd_2_ptr: *const c_char, mat_2_ptr: *const c_char, scalar_1: f64, scalar_2: f64, b_empty: bool) -> *mut c_char {
+pub unsafe extern "C" fn matrices(op_ptr: *const c_char, cmd_1_ptr: *const c_char, mat_1_ptr: *const c_char, cmd_2_ptr: *const c_char, mat_2_ptr: *const c_char, scalar_1: f64, scalar_2: f64, b_empty: *const c_char) -> *mut c_char {
     let op_c_str: &CStr = unsafe { CStr::from_ptr(op_ptr) };
     let cmd_1_c_str: &CStr = unsafe { CStr::from_ptr(cmd_1_ptr) };
     let mat_1_c_str: &CStr = unsafe { CStr::from_ptr(mat_1_ptr) };
     let cmd_2_c_str: &CStr = unsafe { CStr::from_ptr(cmd_2_ptr) };
     let mat_2_c_str: &CStr = unsafe { CStr::from_ptr(mat_2_ptr) };
+
+    let b_empty_c_str: &CStr = unsafe { CStr::from_ptr(b_empty) };
+    let b_empty_str = b_empty_c_str.to_str().unwrap();
+    let b_empty = match b_empty_str {
+        "true" => {true},
+        _ => {false}
+    };
 
     let operation = op_c_str.to_str().unwrap();
     let command_1 = cmd_1_c_str.to_str().unwrap();
