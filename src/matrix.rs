@@ -154,6 +154,9 @@ fn func_match_matrix<'a>(function: &str, matrix: &'a mut Vec<Vec<f64>>) -> Vec<V
         "reduced_row_echelon" => {
             reduced_row_echelon_form(matrix)
         },
+        "inverse" => {
+            matrix_inverse(matrix)
+        },
         _ => {
             matrix.to_owned()
         }

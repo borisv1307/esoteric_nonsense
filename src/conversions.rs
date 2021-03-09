@@ -6,6 +6,9 @@ pub fn conversion_commander(conversion_type: String, from_unit: String, to_unit:
         "temperature" => {
             convert_temperature(&from_unit, &to_unit, units)
         },
+        "distance" => {
+            convert_length(&from_unit, &to_unit, units)
+        },
         _ => {
             println!("Non supported Conversion");
             std::f64::NAN
@@ -13,7 +16,100 @@ pub fn conversion_commander(conversion_type: String, from_unit: String, to_unit:
     }
 }
 
-// Temperatures
+// BEGIN LENGTHS
+
+pub fn convert_length(from_unit: &str, to_unit: &str, units: f64) -> f64 {
+    let mut converted: f64;
+    converted = match from_unit {
+        "AU" => { au_to_m(units) },
+        "CM" => { cm_to_m(units) },
+        "DM" => { dm_to_m(units) },
+        "FT" => { ft_to_m(units) },
+        "IN" => { in_to_m(units) },
+        "KM" => { km_to_m(units) },
+        "LY" => { ly_to_m(units) },
+        "M" => { units },
+        "MI" => { mi_to_m(units) },
+        "MM" => { mm_to_m(units) },
+        "NM" => { nm_to_m(units) },
+        "PC" => { pc_to_m(units) },
+        "YD" => { yd_to_m(units) },
+        _ => {
+            println!("invalid unit");
+            std::f64::NAN
+        }
+    };
+
+    let m = converted;
+    converted = match to_unit {
+        "AU" => { m_to_au(m) },
+        "CM" => { m_to_cm(m) },
+        "DM" => { m_to_dm(m) },
+        "FT" => { m_to_ft(m) },
+        "IN" => { m_to_in(m) },
+        "KM" => { m_to_km(m) },
+        "LY" => { m_to_ly(m) },
+        "M" => { m },
+        "MI" => { m_to_mi(m) },
+        "MM" => { m_to_mm(m) },
+        "NM" => { m_to_nm(m) },
+        "PC" => { m_to_pc(m) },
+        "YD" => { m_to_yd(m) },
+        _ => {
+            println!("invalid unit");
+            std::f64::NAN
+        }
+    };
+
+    // maybe add back??
+    /* 
+    match () {
+        _ if converted < 0.0 => {
+            println!("Negative Length");
+            std::f64::NAN
+        },
+        _ => {
+            converted
+        }
+    } */
+    converted
+}
+
+
+//from metres
+fn m_to_au(m: f64) -> f64 { m / 149_597_870_700. }
+fn m_to_cm(m: f64) -> f64 { m * 100. }
+fn m_to_dm(m: f64) -> f64 { m * 10. }
+fn m_to_ft(m: f64) -> f64 { m * 3.2808 }
+fn m_to_in(m: f64) -> f64 { 12. * m_to_ft(m) }
+fn m_to_km(m: f64) -> f64 { m / 1_000.}
+fn m_to_ly(m: f64) -> f64 { m / 9_460_730_777_119_564. }
+fn m_to_mi(m: f64) -> f64 { m / 1_609.344 }
+fn m_to_mm(m: f64) -> f64 { m * 1_000.}
+fn m_to_nm(m: f64) -> f64 { m / 1_852.}
+fn m_to_pc(m: f64) -> f64 { m / au_to_m(648_000. / std::f64::consts::PI) }
+fn m_to_yd(m: f64) -> f64 { m / 0.9144 }
+//end from metres
+
+//to metres
+fn au_to_m(n: f64) -> f64 { n * 149_597_870_700.}
+fn cm_to_m(n: f64) -> f64 { n / 100. }
+fn dm_to_m(n: f64) -> f64 { n / 10. }
+fn ft_to_m(n: f64) -> f64 { n / 3.2808 }
+fn in_to_m(n: f64) -> f64 { ft_to_m(n) / 12. }
+fn km_to_m(n: f64) -> f64 { n * 1_000. }
+fn ly_to_m(n: f64) -> f64 { n * 9_460_730_777_119_564. }
+fn mi_to_m(n: f64) -> f64 { n * 1609.344 }
+fn mm_to_m(n: f64) -> f64 { n / 1_000. }
+fn nm_to_m(n: f64) -> f64 { n * 1_852. }
+fn pc_to_m(n: f64) -> f64 { au_to_m(648_000. / std::f64::consts::PI) * n }
+fn yd_to_m(n: f64) -> f64 { n * 0.9144 }
+//end to metres
+
+// END LENGTHS
+
+
+// BEGIN TEMPERATURES
 pub fn convert_temperature(from_unit: &str, to_unit: &str, degrees: f64) -> f64 {
     let mut converted: f64 = std::f64::NAN;
     match to_unit {
