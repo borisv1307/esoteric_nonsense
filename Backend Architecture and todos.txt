@@ -1,0 +1,30 @@
+Backend Architecture:
+	The backend is modularized according to safety of functions in concert with subject. An intentionally niave approach is taken with respect to error handling and input verification as these aspects are handled via another repository: "Advanced Calculation".
+
+	mod main:
+		The module main.rs contains all unsafe code and deals with raw pointers in "C" format as lingua franca between the Rust backend and any language which calls its functions, in this case Flutter/Dart.
+
+		The module main.rs is intentionally absent of extensive control structures relating these inputs to their associated features as a matter of proper modularization. All functions in this module return primitives or direct derivatives of primitives (e.g.: Vec<T> for primitive T). It's intended scope is, purely, communication with external systems.
+
+		Currently, there are structs in main.rs for graphing with the specific implementation, found in Advanced Calculation, that may be further modularized, but it was not deemed neccessary at this time for ease of use. Upon the introduction of additional, large features, this may be reexamined.
+
+	mod s_y:
+		The module s_y.rs parses infix notated equations into a tree structure using Djikstra's Shunting Yard algorithm. The module also contains methods to evaluate these trees mathematically.
+
+	mod conversions:
+		The module conversions.rs contains the control stuctures and mathematics related to conversions between different varieties of units (e.g.:length, temperature, etc.).  The inputs for this module are intentionally limited to avoid the spread of unexpected behaviour with the use of exhaustive pattern matching.
+
+	mod matrix:
+		The module matrix.rs contains the control structures and mathematics related to the calculation of various operations on matrices. The inputs for this module are limited as a matter of UI simplification and scheduling. Future iterations of this module may consider writing a separate Shunting Yard algorithm that supports matrices in addition to primitives. If this is implemented, it should reside in this module, with the associated module functions being moved into submodules.
+
+	mod higher_math:
+		The module higher_math.rs is a currently depreciated attempt to use the Sympy Computer Algebra System within Rust. Although these functions work locally and on desktop-style OSes, the requirement for all code to run natively on a mobile device was not met. If the issue of compiling a Python interpreter for an arbitrary architecture can be solved, this will vastly widen the abilities of this repository with little further effort.
+
+
+Potential Future Features:
+	Implement a more comprehensive computer algebra system in Rust (High Cost, High Risk)
+	Implement additional conversions in conversions.rs (Low Cost, Low Risk)
+	Implement additional algorithms in matrix.rs (Low Cost, Low Risk)
+	Implement a Shunting Yard algorithm for matrices in matrix.rs (Medium Cost, Low Risk)
+	Compile a Python Interpreter for all target architectures to use higher_math.rs (High Cost, High Risk)
+	

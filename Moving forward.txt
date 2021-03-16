@@ -1,0 +1,13 @@
+Moving forward
+
+Problems with Implementing a Computer Algebra System (CAS) in Rust:
+	If a future group were to undertake the implementation of a CAS using Rust they should be warned of the following challenges:
+		Creating a CAS in any language is a very high man-year activity.
+		Creating a CAS in any language requires an advanced level of mathematic knowledge, specifically in Abstract Algebra and, potentially, Galois Theory. 
+		There are languages more suited to the task of creating a CAS than Rust, namely various dialects of LISP. This being said, with skill in Rust the language barrier should be the least problematic component.
+		Creating a CAS in general is an High Risk activity, as there are tales of systems that had 300+ man-years invested, with nearly nothing to show for it.
+	There are positives to CAS creation in Rust:
+		Rust is safe, fast, reliable, and easily proven formally.
+		Rust, as of the time of writing, has no crate that acts as a CAS, so you would be making a massive contribution to both the Mathematics and Rust community.
+		Rust is, as of the time of writing, the most loved language among programmers.
+		Experience in Rust will be valuable in your future endeavors, as there are many who argue it will replace safe subsets of C++ for critical-system applications in the upcoming years.
