@@ -9,12 +9,141 @@ pub fn conversion_commander(conversion_type: String, from_unit: String, to_unit:
         "distance" => {
             convert_length(&from_unit, &to_unit, units)
         },
+        "weights" => {
+            convert_weights(&from_unit, &to_unit, units)
+        },
         _ => {
             println!("Non supported Conversion");
             std::f64::NAN
         }
     }
 }
+
+//BEGIN WEIGHT CONVERSION
+fn convert_weights(from_unit: &str, to_unit: &str, w: f64) -> f64 {
+    let ww = 
+    match from_unit {
+        "AMU" => {
+            amu_to_kg(w)
+        },
+        "G" => {
+            g_to_kg(w)
+        },
+        "GR" => {
+            gr_to_kg(w)
+        },
+        "KG" => {
+            kg_to_kg(w)
+        }
+        "KT" => {
+            kt_to_kg(w)
+        },
+        "LB" => {
+            lb_to_kg(w)
+        },
+        "OZ_US" => {
+            oz_to_kg(w)
+        },
+        "OZ_AV" => {
+            oz_av_to_kg(w)
+        },
+        "OZ_TROY" => {
+            oz_t_to_kg(w)
+        }
+        _ => {
+            println!("Invalid Unit");
+            std::f64::NAN
+        }
+    };
+    match to_unit {
+        "AMU" => {
+            kg_to_amu(ww)
+        },
+        "G" => {
+            kg_to_g(ww)
+        },
+        "GR" => {
+            kg_to_gr(ww)
+        },
+        "KG" => {
+            kg_to_kg(ww)
+        },
+        "KT" => {
+            kg_to_kt(ww)
+        },
+        "LB" => {
+            kg_to_lb(ww)
+        },
+        "OZ_US" => {
+            kg_to_oz(ww)
+        },
+        "OZ_AV" => {
+            kg_to_oz_av(ww)
+        },
+        "OZ_TROY" => {
+            kg_to_oz_t(ww)
+        }
+        _ => {
+            println!("Invalid Unit");
+            std::f64::NAN
+        }
+    }
+}
+
+//BEGIN TO KG
+fn amu_to_kg(w: f64) -> f64 { //atomic mass unit
+    w * (1.6605309 * 10_f64.powi(-27))
+}
+fn g_to_kg(w: f64) -> f64 { //gram
+    w * 10_f64.powi(-3)
+}
+fn gr_to_kg(w: f64) -> f64 { //grain
+    w * 6.47981 * 10_f64.powi(-5)
+}
+fn kt_to_kg(w: f64) -> f64 { //carat
+    w * 1.23117929 / 6000.
+}
+fn lb_to_kg(w: f64) -> f64{ //pound
+    w * 0.4536
+}
+fn oz_to_kg(w: f64) -> f64 { //us oz
+    w * 0.028
+}
+fn oz_av_to_kg(w: f64) -> f64 { //aviordupois oz
+    w * (2.8349523125 * 10_f64.powi(-2))
+}
+fn oz_t_to_kg(w: f64) -> f64{ //troy oz
+    w * 0.0311034768
+}
+//END TO KG
+fn kg_to_kg(w: f64) -> f64 {w}
+//BEGIN FROM KG
+fn kg_to_amu(w: f64) -> f64 {
+    w / (1.6605309 * 10_f64.powi(-27))
+}
+fn kg_to_g(w: f64) -> f64 {
+    w * 10_f64.powi(3)
+}
+fn kg_to_gr(w: f64) -> f64 {
+    w / (6.47981 * 10_f64.powi(-5))
+}
+fn kg_to_kt(w: f64) -> f64 {
+    w / (1.23117929 / 6000.)
+}
+fn kg_to_lb(w: f64) -> f64 {
+    w / 0.4536
+}
+fn kg_to_oz(w: f64) -> f64 {
+    w / 0.028
+}
+fn kg_to_oz_av(w: f64) -> f64 {
+    w / (2.8349523125 * 10_f64.powi(-2))
+}
+fn kg_to_oz_t(w: f64) -> f64 {
+    w / 0.0311034768
+}
+//END FROM KG
+//END WEIGHT CONVERSION
 
 // BEGIN LENGTHS
 
